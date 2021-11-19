@@ -1,0 +1,7 @@
+openstack_username = "terraform"
+openstack_project = "admin"
+openstack_auth_url = "http://172.16.4.6:5000/v3"
+openstack_domain = "Default"
+public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILk/T0Kth72ob2F1Fq6LWawzXah2FO8DJxkZyZ9gFyfj tapas@wavelabss-MacBook-Pro.local"
+prefix = "demo"
+pvt_key = "./ssh-keys/id_ed25519"

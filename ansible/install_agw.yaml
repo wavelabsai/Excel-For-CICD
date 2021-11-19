@@ -1,0 +1,123 @@
+
+- name: Install AGW
+  hosts: all
+  become: yes
+  vars:
+    INTERFACE_DIR: "/etc/network/interfaces.d"
+
+  tasks:
+    - name: replace eth1 in installation script
+      shell: sed -i 's/GRUB_CMDLINE_LINUX=""/GRUB_CMDLINE_LINUX="net.ifnames=0 biosdevname=0"/g' /etc/default/grub
+
+    - name: Change the interface
+      shell: grub-mkconfig -o /boot/grub/grub.cfg
+
+    - name: Create sysmlink 
+      shell: ln -sf /var/run/systemd/resolve/resolv.conf /etc/resolv.conf
+
+    - name: Set some nameservers
+      shell: sed -i 's/#DNS=/DNS=8.8.8.8 8.8.4.4 172.16.4.4/' /etc/systemd/resolved.conf
+
+    - name: Restart system resolved
+      ansible.builtin.service:
+        name: systemd-resolved
+        state: restarted
+
+    - name: Install packages
+      apt:
+        pkg:
+        - ifupdown 
+        - net-tools 
+        - ipcalc
+        - git
+        state: present
+
+    - name: Create interface directory
+      ansible.builtin.file:
+        path: '{{ INTERFACE_DIR }}'
+
+    - name: add couchbase.host to properties, works like add or replace
+      lineinfile:
+        path: /etc/network/interfaces
+        regexp: 'source-directory {{ INTERFACE_DIR }}'
+        line: "source-directory {{ INTERFACE_DIR }}"
+
+    - name: Create eth0 file. 
+      copy:
+        dest: "{{ INTERFACE_DIR }}/eth0"
+        content: |
+          auto eth0
+          iface eth0 inet dhcp
+
+    - name: Create eth1 file. 
+      copy:
+        dest: "{{ INTERFACE_DIR }}/eth1"
+        content: |
+          auto eth1
+          iface eth1 inet static
+          address {{ eth1 }}
+          netmask 255.255.252.0
+      register: network_changes
+
+    - name: Restart network service for interface eth0
+      ansible.builtin.service:
+        name: networking
+        enabled: yes
+        state: restarted
+
+    - name: Remove netplan
+      apt:
+        pkg:
+        - nplan 
+        - netplan.i 
+        state: absent
+
+    - name: Wait for server to restart
+      reboot:
+        reboot_timeout: 3600
+      when: network_changes.changed
+
+    - name: Wait 300 seconds for port 22 to become open and contain "OpenSSH"
+      wait_for:
+        port: 22
+        host: '{{ eth0 }}'
+        search_regex: OpenSSH
+        delay: 10
+      connection: local
+      when: network_changes.changed
+
+    - name: Add the user 'magma' 
+      ansible.builtin.user:
+        name: magma
+        shell: /bin/bash
+        append: yes
+
+    - name: Allow 'magma' user to have passwordless sudo
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: '^magma'
+        line: 'magma ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
+
+    - name: Install packages as magma dependency
+      apt:
+        pkg:
+        - curl 
+        - make 
+        - virtualenv 
+        - zip 
+        - rsync 
+        - git 
+        - software-properties-common 
+        - python3-pip 
+        - python-dev 
+        - apt-transport-https
+        state: present
+
+    - name: Clone Magma Repo
+      ansible.builtin.git:
+        repo: https://github.com/magma/magma.git
+        dest: /home/magma/magma
+        single_branch: yes
+        version: v1.6
