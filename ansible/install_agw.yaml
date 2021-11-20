@@ -14,10 +14,13 @@
 
     - name: Create sysmlink 
       shell: ln -sf /var/run/systemd/resolve/resolv.conf /etc/resolv.conf
-
+      args:
+        creates: /etc/resolv.conf
     - name: Set some nameservers
-      shell: sed -i 's/#DNS=/DNS=8.8.8.8 8.8.4.4 172.16.4.4/' /etc/systemd/resolved.conf
-
+      lineinfile:
+        dest: /etc/systemd/resolved.conf
+        regexp: '^#DNS'
+        line: 'DNS=8.8.8.8 8.8.4.4 172.16.4.4'
     - name: Restart system resolved
       ansible.builtin.service:
         name: systemd-resolved
@@ -47,16 +50,20 @@
         dest: "{{ INTERFACE_DIR }}/eth0"
         content: |
           auto eth0
-          iface eth0 inet dhcp
+            iface eth0 inet static
+            address {{ eth0 }}
+            netmask 255.255.252.0
+            gateway 192.16.0.1
+      register: network_changes
 
     - name: Create eth1 file. 
       copy:
         dest: "{{ INTERFACE_DIR }}/eth1"
         content: |
           auto eth1
-          iface eth1 inet static
-          address {{ eth1 }}
-          netmask 255.255.252.0
+            iface eth1 inet static
+            address {{ eth1 }}
+            netmask 255.255.252.0
       register: network_changes
 
     - name: Restart network service for interface eth0
@@ -75,7 +82,7 @@
     - name: Wait for server to restart
       reboot:
         reboot_timeout: 3600
-      when: network_changes.changed
+      when: network_changes changed
 
     - name: Wait 300 seconds for port 22 to become open and contain "OpenSSH"
       wait_for:
@@ -84,7 +91,7 @@
         search_regex: OpenSSH
         delay: 10
       connection: local
-      when: network_changes.changed
+      when: network_changes changed
 
     - name: Add the user 'magma' 
       ansible.builtin.user:

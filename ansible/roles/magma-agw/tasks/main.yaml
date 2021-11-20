@@ -1,0 +1,25 @@
+---
+
+- include: ansible-setup.yaml
+  become: yes
+  tags: setupPackages
+- include: resolver-setup.yaml
+  become: yes
+  tags: setupResolver
+- include: interface.yaml
+  become: yes
+  tags: setupInterface
+- include: user.yaml
+  become: yes
+  tags: addUser
+- include: magma_setup.yaml
+  become: yes
+  tags: setupMagma
+- include: install-magma.yaml
+  become: yes
+  tags: installMagma1.6
+- include: configure-magma.yaml
+  become: yes
+  tags: configureMagma
+- include: upgrade.yaml
+  become: yes

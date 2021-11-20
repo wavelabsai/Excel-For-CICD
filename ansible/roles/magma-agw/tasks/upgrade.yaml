@@ -1,0 +1,48 @@
+---
+- name: copy upgrade file
+  copy:
+    src: roles/magma-agw/files/upgrade_agw.sh
+    dest: "/root/upgrade_agw.sh"
+    mode: '0777'
+  register: upgrade_file
+
+- name: Upgrade magma
+  shell: echo "y" | /bin/bash /root/upgrade_agw.sh
+
+- name: Disable stateless
+  shell: magmad_cli.py config_stateless disable
+  when: upgrade_file.changed
+
+- name: copy mme yml file
+  copy:
+    src: roles/magma-agw/files/mme.yml
+    dest: "/var/opt/magma/configs/mme.yml"
+  register: mme_yml_file
+
+- name: copy pipelined yml file
+  copy:
+    src: roles/magma-agw/files/pipelined.yml
+    dest: "/var/opt/magma/configs/pipelined.yml"
+  register: pipelined_yml_file
+
+- name: copy subscriberdb yml file
+  copy:
+    src: roles/magma-agw/files/subscriberdb.yml
+    dest: "/var/opt/magma/configs/subscriberdb.yml"
+  register: subscriberdb_yml_file
+
+- name: copy sessiond yml file
+  copy:
+    src: roles/magma-agw/files/sessiond.yml
+    dest: "/var/opt/magma/configs/sessiond.yml"
+  register: sessiond_yml_file
+
+- name: Stop magma services
+  command: service magma@* stop
+  when: mme_yml_file.changed or pipelined_yml_file.changed or subscriberdb_yml_file.changed or sessiond_yml_file.changed
+
+- name: Start magma services
+  systemd:
+    name: magma@magmad
+    state: started
+  when: mme_yml_file.changed or pipelined_yml_file.changed or subscriberdb_yml_file.changed or sessiond_yml_file.changed

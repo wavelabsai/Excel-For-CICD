@@ -1,0 +1,31 @@
+---
+
+- name: Upgrade 5g AGW 
+  hosts: all
+  become: true
+  tasks:
+    - name: Install packags
+      apt:
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - apt-transport-https 
+          - gnupg2 
+          - wget 
+          - ca-certificates
+    - name: Configuring private package manager.
+      copy:
+        content: >
+          deb https://artifactory.magmacore.org/artifactory/debian-test focal-ci main
+        dest: /etc/apt/sources.list.d/magma.list
+      become: true
+    - name: Remove all repos
+      shell: rm -rf /etc/apt/sources.list.d/*
+    - name: download
+      shell: wget https://artifactory.magmacore.org:443/artifactory/api/gpg/key/public -O /tmp/public
+    - name: add
+      shell: apt-key add /tmp/public && apt-get update
+    - name: Installing magma.
+      shell: apt install -y magma -o Dpkg::Options::="--force-overwrite"
+    - name: Remove old
+      shell: apt autoremove -y

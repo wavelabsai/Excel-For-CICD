@@ -1,0 +1,13 @@
+- name: download github repo
+  git:
+    repo: "{{ magmaRepo }}"
+    dest: "{{ usrHome }}/magma"
+    version: "{{ magmaVersion }}"
+
+- name: copy inventory file
+  copy:
+    src: roles/magma-agw/files/inventory
+    dest: "{{ usrHome }}/inventory"
+    owner: ubuntu
+    group: ubuntu
+    mode: '0644'

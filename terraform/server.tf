@@ -1,7 +1,12 @@
+resource "openstack_networking_floatingip_v2" "myip" {
+  pool = "public"
+
+}
+
 resource "openstack_networking_port_v2" "ports" {
   count          = 2
   name           = "${format("port-%02d", count.index + 1)}"
-  network_id     = "571d1476-2645-4279-9238-36fe22c8b534"
+  network_id     = "edb1363e-25d3-46f7-bcab-effec6fd7e49"
   admin_state_up = "true"
   port_security_enabled = "false"
 }
@@ -45,8 +50,13 @@ resource "openstack_compute_interface_attach_v2" "attachments" {
   port_id     = "${openstack_networking_port_v2.ports.*.id[1]}"
 }
 
+resource "openstack_networking_floatingip_associate_v2" "myip" {
+  floating_ip = "${openstack_networking_floatingip_v2.myip.address}"
+  port_id = "${openstack_networking_port_v2.ports.*.id[1]}"
+}
+
 locals {
-  agw_ips = [ for ip in openstack_networking_port_v2.ports: ip.all_fixed_ips[0]]
+  agw_ips = [ for ip in openstack_networking_port_v2.ports: ip.all_fixed_ips[0]]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
 }
 
 resource "local_file" "ansible_hosts_cfg" {
@@ -57,4 +67,20 @@ resource "local_file" "ansible_hosts_cfg" {
     }
   )
   filename = "../ansible/orc8r_ansible_hosts"
+}
+
+resource "null_resource" remoteExecProvisionerWFolder {
+
+  provisioner "file" {
+    source      = "./templates/agw_install_ubuntu.sh"
+    destination = "/home/ubuntu/agw_install_ubuntu.sh"
+  }
+
+  connection {
+    host     = "${openstack_compute_instance_v2.agw_deployment.access_ip_v4}"
+    type     = "ssh"
+    user     = "ubuntu"
+    private_key = file(var.pvt_key)
+    agent    = "false"
+  }
 }
