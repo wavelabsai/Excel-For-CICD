@@ -37,11 +37,18 @@ pipeline {
                 }
             }
         }
+        stage ('Configure NMS Dashboard') {
+            steps {
+                dir('ansible') {
+                    sh "ansible-playbook agw_info.yaml"
+                }
+            }
+        }
         stage("Input Stage for Infra Destroy") {
             steps {
                 script {
                     env.DELETE_INFRA = input message: 'User input required', ok: 'Destroy!',
-                            parameters: [choice(name: 'DELETE_INFRA', choices: 'yes\no', description: 'Do you want to delete the infra or not?')]
+                            parameters: [choice(name: 'DELETE_INFRA', choices: 'yes\nno', description: 'Do you want to delete the infra or not?')]
                 }
             }
         }
