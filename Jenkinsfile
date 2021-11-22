@@ -12,6 +12,7 @@ pipeline {
                             dir('terraform') {
                                 sh "terraform init -var='openstack_password=${OPENSTACK_PASSWORD}' -input=false"
                                 sh "terraform apply -var='openstack_password=${OPENSTACK_PASSWORD}' -auto-approve"
+                                sh "chmod 066 ssh-keys/id_ed25519"
                             }
                         }
                     } catch (err) {
