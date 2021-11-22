@@ -3,6 +3,9 @@ pipeline {
     options {
         buildDiscarder(logRotator(numToKeepStr: '3'))
     }
+    environment {
+        prefix= "${JOB_BASE_NAME}_${BUILD_NUMBER}"
+    }
     stages {
         stage ('Create the Infra') {
             steps {
@@ -10,8 +13,8 @@ pipeline {
                     try {
                         withCredentials([usernamePassword(credentialsId: 'openstack_user_password', passwordVariable: 'OPENSTACK_PASSWORD', usernameVariable: 'OPENSTACK_USER')]) {
                             dir('terraform') {
-                                sh "terraform init -var='openstack_password=${OPENSTACK_PASSWORD}' -input=false"
-                                sh "terraform apply -var='openstack_password=${OPENSTACK_PASSWORD}' -auto-approve"
+                                sh ("terraform init -var='openstack_password=${OPENSTACK_PASSWORD}' -var='prefix=${env.prefix}' -input=false")
+                                sh ("terraform apply -var='openstack_password=${OPENSTACK_PASSWORD}' -var='prefix=${env.prefix}' -auto-approve")
                                 sh "chmod 0600 ssh-keys/id_ed25519"
                             }
                         }
@@ -49,7 +52,7 @@ pipeline {
                         if (env.DELETE_INFRA == "yes") {
                             withCredentials([usernamePassword(credentialsId: 'openstack_user_password', passwordVariable: 'OPENSTACK_PASSWORD', usernameVariable: 'OPENSTACK_USER')]) {
                                 dir('terraform') {
-                                    sh "terraform destroy -var='openstack_password=${OPENSTACK_PASSWORD}' -auto-approve"
+                                    sh ("terraform destroy -var='openstack_password=${OPENSTACK_PASSWORD}' -var='prefix=${env.prefix}' -auto-approve")
                                 }
                             }
                         }

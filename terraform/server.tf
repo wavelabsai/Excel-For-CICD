@@ -30,8 +30,7 @@ resource "openstack_compute_instance_v2" "agw_deployment" {
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get update", 
-      "sudo apt-get upgrade -y", 
-      "wget https://raw.githubusercontent.com/magma/magma/v1.6/lte/gateway/deploy/agw_install_ubuntu.sh"
+      "sudo apt-get upgrade -y"
       ]
 
     connection {
@@ -67,20 +66,4 @@ resource "local_file" "ansible_hosts_cfg" {
     }
   )
   filename = "../ansible/orc8r_ansible_hosts"
-}
-
-resource "null_resource" remoteExecProvisionerWFolder {
-
-  provisioner "file" {
-    source      = "./templates/agw_install_ubuntu.sh"
-    destination = "/home/ubuntu/agw_install_ubuntu.sh"
-  }
-
-  connection {
-    host     = "${openstack_compute_instance_v2.agw_deployment.access_ip_v4}"
-    type     = "ssh"
-    user     = "ubuntu"
-    private_key = file(var.pvt_key)
-    agent    = "false"
-  }
 }
