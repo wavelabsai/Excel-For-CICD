@@ -1,10 +1,13 @@
 pipeline {
     agent any
     options {
-        buildDiscarder(logRotator(numToKeepStr: '3'))
+        buildDiscarder(logRotator(numToKeepStr: '3'));
+        timestamps()
     }
     environment {
         prefix= "${JOB_BASE_NAME}_${BUILD_NUMBER}"
+        admin_operator_key_pem = credentials('admin_operator_key_pem')
+        admin_operator_pem = credentials('admin_operator_pem')
     }
     stages {
         stage ('Create the Infra') {
@@ -41,6 +44,22 @@ pipeline {
             steps {
                 dir('ansible') {
                     sh "ansible-playbook agw_info.yaml"
+                    def network_name = env.prefix + "_lte_network"
+                    def agw_name = env.prefix + "_5g_agw"
+                    def lteNetworkData = readJSON file: "../config_files/lte_networks.json"
+                    lteNetworkData.description = "5G Network automation by Jenkins"
+                    lteNetworkData.id = network_name
+                    lteNetworkData.name = network_name
+                    creatNetworkPostMethod(lteNetworkData)
+                    def agwData = readJSON file: "../config_files/agw_data.json"
+                    def agw_hardware_id = readFile 'agw_hw_key.info'
+                    def agw_chl_key = readFile 'agw_chl_key.info'
+                    agwData.description = "5G Network automation by Jenkins"
+                    agwData.device.hardware_id = agw_hardware_id
+                    agwData.device.key.key = agw_chl_key
+                    agwData.id = agw_name
+                    agwData.name = agw_name
+                    add5gAgwPostMethod (network_name, agwData)
                 }
             }
         }
@@ -73,4 +92,20 @@ pipeline {
             }
         }
     }
+}
+
+def creatNetworkPostMethod (data) {
+    def jsonData = data.toString()
+    sh """
+    curl -k --insecure --cert ${admin_operator_pem} --key ${admin_operator_key_pem} -X 'POST' 'https://api.magmasi.wavelabs.in/magma/v1/lte' \
+    -H 'accept: application/json' -H 'Content-Type: application/json' -d '${jsonData}'
+    """
+}
+
+def add5gAgwPostMethod (networkName, data) {
+    def jsonData = data.toString()
+    sh """
+    curl -k --insecure --cert admin_operator.pem --key admin_operator.key.pem -X 'POST' 'https://api.magmasi.wavelabs.in/magma/v1/lte/${networkName}/gateways' \
+    -H 'accept: application/json' -H 'Content-Type: application/json' -d '${jsonData}'
+    """
 }

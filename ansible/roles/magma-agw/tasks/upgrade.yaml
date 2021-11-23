@@ -37,6 +37,12 @@
     dest: "/var/opt/magma/configs/sessiond.yml"
   register: sessiond_yml_file
 
+- name: copy pipelined yml file to etc directory
+  copy:
+    src: roles/magma-agw/files/sessiond.yml
+    dest: "/var/opt/magma/configs/sessiond.yml"
+  register: sessiond_yml_file
+  
 - name: Stop magma services
   command: service magma@* stop
   when: mme_yml_file.changed or pipelined_yml_file.changed or subscriberdb_yml_file.changed or sessiond_yml_file.changed
