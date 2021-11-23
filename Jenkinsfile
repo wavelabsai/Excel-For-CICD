@@ -46,16 +46,22 @@ pipeline {
                     sh "ansible-playbook agw_info.yaml"
                 }
                 script {
-                    def network_name = env.prefix + "_lte_network"
+                    // Hardcoding the network name for a temporary basis unit the nework creat REST api is fixed. 
+                    //def network_name = env.prefix + "_lte_network"
+                    def network_name = "5g_lte_network_jenkins"
                     def agw_name = env.prefix + "_5g_agw"
-                    def lteNetworkData = readJSON file: "../config_files/lte_networks.json"
+                    /*
+                    Currently we are having issue with tier while creating the networking using REST api.
+
+                    def lteNetworkData = readJSON file: "./config_files/lte_network.json"
                     lteNetworkData.description = "5G Network automation by Jenkins"
                     lteNetworkData.id = network_name
                     lteNetworkData.name = network_name
                     creatNetworkPostMethod(lteNetworkData)
-                    def agwData = readJSON file: "../config_files/agw_data.json"
-                    def agw_hardware_id = readFile 'agw_hw_key.info'
-                    def agw_chl_key = readFile 'agw_chl_key.info'
+                    */
+                    def agwData = readJSON file: "./config_files/agw_data.json"
+                    def agw_hardware_id = readFile('./ansible/agw_hw_key.info').trim()
+                    def agw_chl_key = readFile('./ansible/agw_chl_key.info').trim()
                     agwData.description = "5G Network automation by Jenkins"
                     agwData.device.hardware_id = agw_hardware_id
                     agwData.device.key.key = agw_chl_key
@@ -107,7 +113,7 @@ def creatNetworkPostMethod (data) {
 def add5gAgwPostMethod (networkName, data) {
     def jsonData = data.toString()
     sh """
-    curl -k --insecure --cert admin_operator.pem --key admin_operator.key.pem -X 'POST' 'https://api.magmasi.wavelabs.in/magma/v1/lte/${networkName}/gateways' \
+    curl -k --insecure --cert ${admin_operator_pem} --key ${admin_operator_key_pem} -X 'POST' 'https://api.magmasi.wavelabs.in/magma/v1/lte/${networkName}/gateways' \
     -H 'accept: application/json' -H 'Content-Type: application/json' -d '${jsonData}'
     """
 }
