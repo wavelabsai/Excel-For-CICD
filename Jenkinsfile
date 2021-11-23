@@ -45,22 +45,24 @@ pipeline {
                 dir('ansible') {
                     sh "ansible-playbook agw_info.yaml"
                 }
-                def network_name = env.prefix + "_lte_network"
-                def agw_name = env.prefix + "_5g_agw"
-                def lteNetworkData = readJSON file: "../config_files/lte_networks.json"
-                lteNetworkData.description = "5G Network automation by Jenkins"
-                lteNetworkData.id = network_name
-                lteNetworkData.name = network_name
-                creatNetworkPostMethod(lteNetworkData)
-                def agwData = readJSON file: "../config_files/agw_data.json"
-                def agw_hardware_id = readFile 'agw_hw_key.info'
-                def agw_chl_key = readFile 'agw_chl_key.info'
-                agwData.description = "5G Network automation by Jenkins"
-                agwData.device.hardware_id = agw_hardware_id
-                agwData.device.key.key = agw_chl_key
-                agwData.id = agw_name
-                agwData.name = agw_name
-                add5gAgwPostMethod (network_name, agwData)
+                script {
+                    def network_name = env.prefix + "_lte_network"
+                    def agw_name = env.prefix + "_5g_agw"
+                    def lteNetworkData = readJSON file: "../config_files/lte_networks.json"
+                    lteNetworkData.description = "5G Network automation by Jenkins"
+                    lteNetworkData.id = network_name
+                    lteNetworkData.name = network_name
+                    creatNetworkPostMethod(lteNetworkData)
+                    def agwData = readJSON file: "../config_files/agw_data.json"
+                    def agw_hardware_id = readFile 'agw_hw_key.info'
+                    def agw_chl_key = readFile 'agw_chl_key.info'
+                    agwData.description = "5G Network automation by Jenkins"
+                    agwData.device.hardware_id = agw_hardware_id
+                    agwData.device.key.key = agw_chl_key
+                    agwData.id = agw_name
+                    agwData.name = agw_name
+                    add5gAgwPostMethod (network_name, agwData)
+                }
             }
         }
         stage("Input Stage for Infra Destroy") {
