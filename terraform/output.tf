@@ -1,3 +1,3 @@
 output "ip" {
-  value = "${local.agw_ips}"
+  value = "public_ip = ${local.public_ip} and private_ip = ${local.agw_ips}"
 }
