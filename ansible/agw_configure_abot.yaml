@@ -1,0 +1,10 @@
+---
+- name: Configure SSH keys 
+  hosts: all
+  become: yes
+  tasks:
+    - name: Configure ABot ssh keys on AGW
+      authorized_key:
+        user: ubuntu
+        state: present
+        key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD6ZZnqjVT+KH+jXioCKgTmWcUDl+HRaDN8u8x6cRfIEfnfFj+gUCqAoMSrOsEtPwWh0SrkB5IT2/tGwTcnYbW0apwxqDsbBxi9jO8+WQFwM8wFZCyBhIdMxQkfxohRt/zDg3Je00nOVJIQu84J4KIQYhkA3ygyyIiRUoDPF9NhPu0J22agusnAfS3QP8DWAlQRgC0xYV9OycUgCabB3U3FoTOY3He3Mcq0cH23zbbNvcS/A0pr0EDTfydTb0CoFLRV0NhQjn7doGjWdZt7OpxAFwNfdhxgHSn2H/j1TV283aL5Tk722FGKTOUHzqWREXQrrHOyTB0Ui9uqYTE/A0S/ abot@abot-magma-simulator-2"
