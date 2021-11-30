@@ -45,14 +45,16 @@ pipeline {
         }
         stage ('Deploy and upgrade AGW') {
             steps {
-                packageVersion = parseUrl(params.ARTIFACTID)
-                if (UPGRADE) {
-                    dir('ansible') {
-                        sh "ansible-playbook agw_deploy.yaml --extra-vars 'magma5gVersion=${packageVersion}'"
-                    }
-                } else {
-                    dir('ansible') {
-                        sh "ansible-playbook agw_deploy.yaml --skip-tags upgrade5gVersion"
+                def packageVersion = parseUrl(params.ARTIFACTID)
+                script {
+                    if (UPGRADE) {
+                        dir('ansible') {
+                            sh "ansible-playbook agw_deploy.yaml --extra-vars 'magma5gVersion=${packageVersion}'"
+                        }
+                    } else {
+                        dir('ansible') {
+                            sh "ansible-playbook agw_deploy.yaml --skip-tags upgrade5gVersion"
+                        }
                     }
                 }
             }
