@@ -47,7 +47,7 @@ pipeline {
             steps {
                 script {
                     def packageVersion = parseUrl(params.ARTIFACTID)
-                    if (UPGRADE) {
+                    if (params.UPGRADE) {
                         dir('ansible') {
                             sh "ansible-playbook agw_deploy.yaml --extra-vars 'magma5gVersion=${packageVersion}'"
                         }
