@@ -45,8 +45,8 @@ pipeline {
         }
         stage ('Deploy and upgrade AGW') {
             steps {
-                def packageVersion = parseUrl(params.ARTIFACTID)
                 script {
+                    def packageVersion = parseUrl(params.ARTIFACTID)
                     if (UPGRADE) {
                         dir('ansible') {
                             sh "ansible-playbook agw_deploy.yaml --extra-vars 'magma5gVersion=${packageVersion}'"
