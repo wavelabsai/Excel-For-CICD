@@ -4,6 +4,7 @@ WHOAMI=$(whoami)
 MAGMA_VERSION="1.7.0"
 # Default is focal
 OS_VERSION="focal-ci"
+PACKAGE_VERSION=$1
 
 echo "Checking if the script has been executed by root user"
 if [ "$WHOAMI" != "root" ]; then
@@ -40,7 +41,11 @@ apt-key add /tmp/public
 echo "deb https://artifactory.magmacore.org/artifactory/debian-test $OS_VERSION main" > /etc/apt/sources.list.d/magma.list
 
 apt update
-apt install -y magma -o Dpkg::Options::="--force-overwrite"
+if [ ! -z $PACKAGE_VERSION ]; then
+  apt install -y magma=$PACKAGE_VERSION -o Dpkg::Options::="--force-overwrite"
+else 
+  apt install -y magma -o Dpkg::Options::="--force-overwrite"
+fi 
 
 # Apply latest service configs.
 systemctl daemon-reload

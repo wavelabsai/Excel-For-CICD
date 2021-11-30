@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    parameters {
+        string(name: 'ARTIFACTID', defaultValue: 'https://artifactory.magmacore.org/artifactory/debian-test/pool/focal-ci/magma_1.7.0-1637259345-3c88ec27_amd64.deb', description: 'Download URL to the Deb package')
+        booleanParam(name: 'UPGRADE', defaultValue: true, description: 'Do you want to upgrade to 5G version of AGW?')
+    }
     options {
         buildDiscarder(logRotator(numToKeepStr: '3'));
         timestamps()
@@ -23,7 +27,13 @@ pipeline {
                         }
                     } catch (err) {
                         echo err.getMessage()
-                        echo "Error detected, but we will continue." 
+                        echo "Error detected, we will exit here."
+                        withCredentials([usernamePassword(credentialsId: 'openstack_user_password', passwordVariable: 'OPENSTACK_PASSWORD', usernameVariable: 'OPENSTACK_USER')]) {
+                            dir('terraform') {
+                                sh ("terraform destroy -var='openstack_password=${OPENSTACK_PASSWORD}' -var='prefix=${env.prefix}' -auto-approve")
+                            }
+                        }
+                        break
                     } finally {
                         dir('terraform') {
                             archiveArtifacts artifacts: 'terraform.tfstate'
@@ -35,8 +45,15 @@ pipeline {
         }
         stage ('Deploy and upgrade AGW') {
             steps {
-                dir('ansible') {
-                    sh "ansible-playbook agw_deploy.yaml"
+                packageVersion = parseUrl(params.ARTIFACTID)
+                if (UPGRADE) {
+                    dir('ansible') {
+                        sh "ansible-playbook agw_deploy.yaml --extra-vars 'magma5gVersion=${packageVersion}'"
+                    }
+                } else {
+                    dir('ansible') {
+                        sh "ansible-playbook agw_deploy.yaml --skip-tags upgrade5gVersion"
+                    }
                 }
             }
         }
@@ -116,4 +133,12 @@ def add5gAgwPostMethod (networkName, data) {
     curl -k --insecure --cert ${admin_operator_pem} --key ${admin_operator_key_pem} -X 'POST' 'https://api.magmasi.wavelabs.in/magma/v1/lte/${networkName}/gateways' \
     -H 'accept: application/json' -H 'Content-Type: application/json' -d '${jsonData}'
     """
+}
+
+def parseUrl (url) {
+    String[] urlArray = url.split("/");
+    String lastPath = urlArray[urlArray.length-1];
+    lastPath = lastPath.take(lastPath.lastIndexOf('.'))
+    packageVersion = lastPath.substring(lastPath.indexOf("_") + 1)
+    return packageVersion
 }

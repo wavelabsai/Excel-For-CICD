@@ -1,5 +1,5 @@
 ---
-- name: copy upgrade file
+- name: Copy upgrade file
   copy:
     src: roles/magma-agw/files/upgrade_agw.sh
     dest: "/root/upgrade_agw.sh"
@@ -7,37 +7,42 @@
   register: upgrade_file
 
 - name: Upgrade magma
+  shell: "echo 'y'| /bin/bash /root/upgrade_agw.sh {{ magma5gVersion }}"
+  when: magma5gVersion is defined
+
+- name: Upgrade magma
   shell: echo "y" | /bin/bash /root/upgrade_agw.sh
+  when: magma5gVersion is not defined
 
 - name: Disable stateless
   shell: magmad_cli.py config_stateless disable
   when: upgrade_file.changed
 
-- name: copy mme yml file
+- name: Copy mme yml file
   copy:
     src: roles/magma-agw/files/mme.yml
     dest: "/var/opt/magma/configs/mme.yml"
   register: mme_yml_file
 
-- name: copy pipelined yml file
+- name: Copy pipelined yml file
   copy:
     src: roles/magma-agw/files/pipelined.yml
     dest: "/var/opt/magma/configs/pipelined.yml"
   register: pipelined_yml_file
 
-- name: copy subscriberdb yml file
+- name: Copy subscriberdb yml file
   copy:
     src: roles/magma-agw/files/subscriberdb.yml
     dest: "/var/opt/magma/configs/subscriberdb.yml"
   register: subscriberdb_yml_file
 
-- name: copy sessiond yml file
+- name: Copy sessiond yml file
   copy:
     src: roles/magma-agw/files/sessiond.yml
     dest: "/var/opt/magma/configs/sessiond.yml"
   register: sessiond_yml_file
 
-- name: copy pipelined yml file to etc directory
+- name: Copy pipelined yml file to etc directory
   copy:
     src: roles/magma-agw/files/sessiond.yml
     dest: "/var/opt/magma/configs/sessiond.yml"
