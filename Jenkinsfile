@@ -31,6 +31,7 @@ pipeline {
                         withCredentials([usernamePassword(credentialsId: 'openstack_user_password', passwordVariable: 'OPENSTACK_PASSWORD', usernameVariable: 'OPENSTACK_USER')]) {
                             dir('terraform') {
                                 sh ("terraform destroy -var='openstack_password=${OPENSTACK_PASSWORD}' -var='prefix=${env.prefix}' -auto-approve")
+                                archiveArtifacts artifacts: 'terraform.tfstate'
                             }
                         }
                         break
