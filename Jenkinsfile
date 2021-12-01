@@ -3,15 +3,17 @@ pipeline {
     parameters {
         string(name: 'ARTIFACTID', defaultValue: 'https://artifactory.magmacore.org/artifactory/debian-test/pool/focal-ci/magma_1.7.0-1637259345-3c88ec27_amd64.deb', description: 'Download URL to the Deb package')
         booleanParam(name: 'UPGRADE', defaultValue: true, description: 'Do you want to upgrade to 5G version of AGW?')
+        booleanParam(name: 'ABotInt', defaultValue: true, description: 'Do you want to Integrate ABot Test framework?')
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '3'));
         timestamps()
     }
     environment {
-        prefix= "${JOB_BASE_NAME}_${BUILD_NUMBER}"
+        prefix= "${JOB_BASE_NAME}-${BUILD_NUMBER}"
         admin_operator_key_pem = credentials('admin_operator_key_pem')
         admin_operator_pem = credentials('admin_operator_pem')
+        abot_ip = "172.16.6.184"
     }
     stages {
         stage ('Create the Infra') {
@@ -91,6 +93,75 @@ pipeline {
                 }
             }
         }
+        stage ('Configure ABot with new MME IP and AGW VM') {
+            when { expression { return params.ABotInt } }
+            steps {
+                script {
+                    dir('ansible') {
+                        sh "ansible-playbook agw_configure_abot.yaml -vv"
+                    }
+                    ipDataFromJson = readYaml file: ansible/orc8r_ansible_hosts
+                    mmeIP = ipDataFromJson.all.vars.eth1
+                    configChangeSta = sh(returnStdout: true, script: """curl -X POST -H "Content-Type: application/json" -d '{"comment":{},"uncomment":{},"update":{"MME1.SecureShell.IPAddress":"${mmeIP}"}}' http://${abot_ip}:5000/abot/api/v5/update_config_properties?filename=/etc/rebaca-test-suite/config/magma/nodes-all.propertie""").trim()
+                    configChangeSta = readJSON text: configChangeSta
+                    if ( configChangeSta.Status.toString() != "OK" ) {
+                        break
+                    }
+                }
+            }
+        }
+        stage ('Execute Feature File') {
+            when { expression { return params.ABotInt } }
+            steps {
+                script {
+                    def execStatus = true
+                    runFeatureFile = sh(returnStdout: true, script: """curl --request POST http://${abot_ip}:5000/abot/api/v5/feature_files/execute -d '{"params": "1-s1-setup"}'""").trim()
+                    runFeatureFile = readJSON text: runFeatureFile
+                    runFeatureFile = runFeatureFile.status.toString()
+                    if ( runFeatureFile == "OK" ) {
+                        while (execStatus) {
+                            execStatus = sh(returnStdout: true, script: """curl --request GET http://${abot_ip}:5000/abot/api/v5/execution_status""").trim()
+                            execStatus = readJSON text: execStatus
+                            execStatus = execStatus.status
+                            println "Executing Feature Files: "
+                            sleep time: 30, unit: 'SECONDS'
+                        }
+                    }
+                }
+            }
+        }
+        stage ('Get test result info and download') {
+            when { expression { return params.ABotInt } }
+            steps {
+                script {
+                    try {
+                        lastArtTimeStamp = sh(returnStdout: true, script: """curl --request GET http://${abot_ip}:5000/abot/api/v5/latest_artifact_name""").trim()
+                        lastArtTimeStamp = readJSON text: lastArtTimeStamp
+                        echo lastArtTimeStamp.data.latest_artifact_timestamp.toString()
+                        lastArtTimeStamp = lastArtTimeStamp.data.latest_artifact_timestamp.toString()
+                        lastArtUrl = sh(returnStdout: true, script: """curl --request GET http://${abot_ip}:5000/abot/api/v5/artifacts/download?artifact_name=${lastArtTimeStamp}""").trim()
+                        lastArtUrl = readJSON text: lastArtUrl
+                        fileUrl = lastArtUrl.result.toString()
+                        sh(returnStdout: true, script: """curl ${fileUrl} -o testArtifact.zip""")
+                        sh(returnStdout: true, script: """if [ ! -d testArtifact ]; then mkdir testArtifact; fi""")
+                        unzip dir: 'testArtifact', glob: '', zipFile: 'testArtifact.zip' 
+                        getResult = sh(returnStdout: true, script: """curl --request GET http://${abot_ip}:5000/abot/api/v5/artifacts/execFeatureSummary?foldername=${lastArtTimeStamp}""").trim()
+                        getResult = readJSON text: getResult
+                        def htmlText = createHtmlTableBody (getResult)
+                        writeFile file: 'testArtifact/logs/sut-logs/magma-epc/MME1/index.html', text: htmlText.toString()                        
+                    } catch (err) {
+                        println err
+                        deleteDir()
+                    } 
+                }
+            }
+        }
+        stage ('Sync ABot test reports to Test Agent') {
+            when { expression { return params.ABotInt } }
+            steps {
+                echo "Create Ansible scripts to sync the reports with test_agent"
+            }
+        }
         stage("Input Stage for Infra Destroy") {
             steps {
                 script {
@@ -144,4 +215,52 @@ def parseUrl (url) {
     lastPath = lastPath.take(lastPath.lastIndexOf('.'))
     packageVersion = lastPath.substring(lastPath.indexOf("_") + 1)
     return packageVersion
+}
+
+def createHtmlTableBody (jsonData) {
+    def engine = new groovy.text.SimpleTemplateEngine()
+    def tableBody = """
+        <!DOCTYPE html>
+        <html>
+        <style>
+        table, th, td {
+        border:1px solid black;
+        }
+        </style>
+        <body>
+        <h2>A basic HTML table</h2>
+        <table style="width:100%">
+        <tr>
+        <th rowspan = "2">Test Case Name</th>
+        <th rowspan = "2">Test Run Result</th>
+        <th colspan = "3">Scenario</th>
+        <th colspan = "4">Steps</th>
+        </tr>
+        <tr>
+        <th>Failed</th>
+        <th>Passed</th>
+        <th>Total</th>
+        <th>Failed</th>
+        <th>Passed</th>
+        <th>Skipped</th>
+        <th>Total</th>
+        </tr>
+        <% for(r in jsonData.feature_summary.result.data) { %>
+        <tr>
+        <td><%= r.featureName %></td>
+        <td><%= r.features.status %></td>
+        <td><%= r.scenario.failed %></td>
+        <td><%= r.scenario.passed %></td>
+        <td><%= r.scenario.total %></td>
+        <td><%= r.steps.failed %></td>
+        <td><%= r.steps.passed %></td>
+        <td><%= r.steps.skipped %></td>
+        <td><%= r.steps.total %></td>
+        </tr>
+        <% } %>
+        </table>
+        </body>
+        </html>
+        """
+  return engine.createTemplate(tableBody).make([jsonData: jsonData])
 }
