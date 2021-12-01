@@ -36,7 +36,7 @@ pipeline {
                                 archiveArtifacts artifacts: 'terraform.tfstate'
                             }
                         }
-                        break
+                        error
                     } finally {
                         dir('terraform') {
                             archiveArtifacts artifacts: 'terraform.tfstate'
@@ -153,7 +153,7 @@ pipeline {
                         writeFile file: 'testArtifact/logs/sut-logs/magma-epc/MME1/index.html', text: htmlText.toString()                        
                     } catch (err) {
                         println err
-                        deleteDir()
+                        //deleteDir()
                     } 
                 }
             }
