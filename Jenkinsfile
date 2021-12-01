@@ -100,12 +100,12 @@ pipeline {
                     dir('ansible') {
                         sh "ansible-playbook agw_configure_abot.yaml -vv"
                     }
-                    ipDataFromJson = readYaml file: ansible/orc8r_ansible_hosts
+                    ipDataFromJson = readYaml file: 'ansible/orc8r_ansible_hosts'
                     mmeIP = ipDataFromJson.all.vars.eth1
                     configChangeSta = sh(returnStdout: true, script: """curl -X POST -H "Content-Type: application/json" -d '{"comment":{},"uncomment":{},"update":{"MME1.SecureShell.IPAddress":"${mmeIP}"}}' http://${abot_ip}:5000/abot/api/v5/update_config_properties?filename=/etc/rebaca-test-suite/config/magma/nodes-all.propertie""").trim()
                     configChangeSta = readJSON text: configChangeSta
                     if ( configChangeSta.Status.toString() != "OK" ) {
-                        break
+                        error "Error configuring the MME IP in ABot."
                     }
                 }
             }
@@ -115,7 +115,7 @@ pipeline {
             steps {
                 script {
                     def execStatus = true
-                    runFeatureFile = sh(returnStdout: true, script: """curl --request POST http://${abot_ip}:5000/abot/api/v5/feature_files/execute -d '{"params": "1-s1-setup"}'""").trim()
+                    runFeatureFile = sh(returnStdout: true, script: """curl --request POST http://${abot_ip}:5000/abot/api/v5/feature_files/execute -d '{"params": "23401-4g-magma"}'""").trim()
                     runFeatureFile = readJSON text: runFeatureFile
                     runFeatureFile = runFeatureFile.status.toString()
                     if ( runFeatureFile == "OK" ) {
@@ -126,6 +126,8 @@ pipeline {
                             println "Executing Feature Files: "
                             sleep time: 30, unit: 'SECONDS'
                         }
+                    } else {
+                        error "Error running Feature files."
                     }
                 }
             }
