@@ -34,3 +34,8 @@ variable "openstack_domain" {
   type = string
   description = "Openstack domain name which tenant exists on"
 }
+
+variable "flavor_id" {
+  type = string
+  description = "Openstack Flavor ID"
+}
