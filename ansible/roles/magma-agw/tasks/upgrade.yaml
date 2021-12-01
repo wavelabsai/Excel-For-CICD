@@ -9,6 +9,10 @@
 - name: Upgrade magma
   shell: "echo 'y'| /bin/bash /root/upgrade_agw.sh {{ magma5gVersion }}"
   when: magma5gVersion is defined
+  register: upgradeShell
+
+- local_action: command echo item
+  with_items: upgradeShell.stdout_lines
 
 - name: Upgrade magma
   shell: echo "y" | /bin/bash /root/upgrade_agw.sh
