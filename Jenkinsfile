@@ -102,7 +102,7 @@ pipeline {
                     }
                     ipDataFromJson = readYaml file: 'ansible/orc8r_ansible_hosts'
                     mmeIP = ipDataFromJson.all.vars.eth1
-                    configChangeSta = sh(returnStdout: true, script: """curl -X POST -H "Content-Type: application/json" -d '{"comment":{},"uncomment":{},"update":{"MME1.SecureShell.IPAddress":"${mmeIP}"}}' http://${abot_ip}:5000/abot/api/v5/update_config_properties?filename=/etc/rebaca-test-suite/config/magma/nodes-all.propertie""").trim()
+                    configChangeSta = sh(returnStdout: true, script: """curl --request POST http://${abot_ip}:5000/abot/api/v5/update_config_properties?filename=/etc/rebaca-test-suite/config/magma/nodes-all.propertie -d '{"update":{"MME1.SecureShell.IPAddress":"${mmeIP}"}}'""").trim()
                     configChangeSta = readJSON text: configChangeSta
                     if ( configChangeSta.Status.toString() != "OK" ) {
                         error "Error configuring the MME IP in ABot."
@@ -214,7 +214,7 @@ def add5gAgwPostMethod (networkName, data) {
 def parseUrl (url) {
     String[] urlArray = url.split("/");
     String lastPath = urlArray[urlArray.length-1];
-    lastPath = lastPath.take(lastPath.lastIndexOf('.'))
+    lastPath = lastPath.take(lastPath.lastIndexOf('_'))
     packageVersion = lastPath.substring(lastPath.indexOf("_") + 1)
     return packageVersion
 }
