@@ -4,7 +4,7 @@ pipeline {
         string(name: 'ARTIFACTID', defaultValue: 'https://artifactory.magmacore.org/artifactory/debian-test/pool/focal-ci/magma_1.7.0-1637259345-3c88ec27_amd64.deb', description: 'Download URL to the Deb package')
         booleanParam(name: 'UPGRADE', defaultValue: true, description: 'Do you want to upgrade to 5G version of AGW?')
         booleanParam(name: 'ABotInt', defaultValue: true, description: 'Do you want to Integrate ABot Test framework?')
-        booleanParam(name: 'TestCaseName', defaultValue: '23401-4g-magma', description: 'Mention the test Case that you want to execute.')
+        string(name: 'TestCaseName', defaultValue: '23401-4g-magma', description: 'Mention the test Case that you want to execute.')
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '3'));
@@ -70,7 +70,7 @@ pipeline {
                 script {
                     // Hardcoding the network name for a temporary basis unit the nework creat REST api is fixed. 
                     //def network_name = env.prefix + "_lte_network"
-                    def network_name = "5g_lte_network_jenkins"
+                    def network_name = "ubuntu_agw_6_186"
                     def agw_name = env.prefix + "_5g_agw"
                     /*
                     Currently we are having issue with tier while creating the networking using REST api.
@@ -276,6 +276,7 @@ def createHtmlTableBody (jsonData) {
         </html>
         """
   def htmlText = engine.createTemplate(tableBody).make([jsonData: jsonData])
+  println htmlText.toString()
   writeFile file: 'testArtifact/logs/sut-logs/magma-epc/MME1/index.html', text: htmlText.toString()
 }
 
