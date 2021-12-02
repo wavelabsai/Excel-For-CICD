@@ -52,11 +52,11 @@ pipeline {
                     def packageVersion = parseUrl(params.ARTIFACTID)
                     if (params.UPGRADE) {
                         dir('ansible') {
-                            sh "ansible-playbook agw_deploy.yaml --extra-vars \'magma5gVersion=${packageVersion}\' -vv"
+                            sh "ansible-playbook agw_deploy.yaml --extra-vars \'magma5gVersion=${packageVersion}\'"
                         }
                     } else {
                         dir('ansible') {
-                            sh "ansible-playbook agw_deploy.yaml --skip-tags upgrade5gVersion -vv"
+                            sh "ansible-playbook agw_deploy.yaml --skip-tags upgrade5gVersion"
                         }
                     }
                 }
@@ -90,6 +90,7 @@ pipeline {
                     agwData.id = agw_name
                     agwData.name = agw_name
                     add5gAgwPostMethod (network_name, agwData)
+                    sleep 120
                 }
             }
         }
