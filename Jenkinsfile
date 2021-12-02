@@ -117,16 +117,16 @@ pipeline {
             steps {
                 script {
                     def execStatus = true
-                    def url = "http://${abot_ip}:5000" + '/abot/api/v5/feature_files/execute'
-                    def params = "{\"params\": \"${params.TestCaseName}\"}"
-                    runFeatureFile = sendRestReq(url, 'POST', params, 'application/json')
+                    def runFeatureFileurl = "http://${abot_ip}:5000" + '/abot/api/v5/feature_files/execute'
+                    def runFeatureFileparams = "{\"params\": \"${params.TestCaseName}\"}"
+                    runFeatureFile = sendRestReq(runFeatureFileurl, 'POST', runFeatureFileparams, 'application/json')
                     runFeatureFile = readJSON text: runFeatureFile.content
                     runFeatureFile = runFeatureFile.status.toString()
                     if ( runFeatureFile == "OK" ) {
                         while (execStatus) {
-                            def url = "http://${abot_ip}:5000" + '/abot/api/v5/execution_status'
-                            def params = ""
-                            execStatus = sendRestReq(url, 'GET', params, 'application/json')
+                            def execStatusurl = "http://${abot_ip}:5000" + '/abot/api/v5/execution_status'
+                            def execStatusparams = ""
+                            execStatus = sendRestReq(execStatusurl, 'GET', execStatusparams, 'application/json')
                             execStatus = readJSON text: execStatus.content
                             execStatus = execStatus.status
                             println "Executing Feature Files: "
@@ -143,23 +143,23 @@ pipeline {
             steps {
                 script {
                     try {
-                        def url = "http://${abot_ip}:5000" + '/abot/api/v5/latest_artifact_name'
-                        def params = ""
-                        lastArtTimeStamp = sendRestReq(url, 'GET', params, 'application/json')
+                        def lastArtTimeStampurl = "http://${abot_ip}:5000" + '/abot/api/v5/latest_artifact_name'
+                        def lastArtTimeStampparams = ""
+                        lastArtTimeStamp = sendRestReq(lastArtTimeStampurl, 'GET', lastArtTimeStampparams, 'application/json')
                         lastArtTimeStamp = readJSON text: lastArtTimeStamp.content
                         echo lastArtTimeStamp.data.latest_artifact_timestamp.toString()
                         lastArtTimeStamp = lastArtTimeStamp.data.latest_artifact_timestamp.toString()
-                        def url = "http://${abot_ip}:5000" + "/abot/api/v5/artifacts/download?artifact_name=${lastArtTimeStamp}"
-                        def params = ""
-                        lastArtUrl = sendRestReq(url, 'GET', params, 'application/json')
+                        def lastArtUrlurl = "http://${abot_ip}:5000" + "/abot/api/v5/artifacts/download?artifact_name=${lastArtTimeStamp}"
+                        def lastArtUrlparams = ""
+                        lastArtUrl = sendRestReq(lastArtUrlurl, 'GET', lastArtUrlparams, 'application/json')
                         lastArtUrl = readJSON text: lastArtUrl.content
                         fileUrl = lastArtUrl.result.toString()
                         sh(returnStdout: true, script: """curl ${fileUrl} -o testArtifact.zip""")
                         sh(returnStdout: true, script: """if [ ! -d testArtifact ]; then mkdir testArtifact; fi""")
                         unzip dir: 'testArtifact', glob: '', zipFile: 'testArtifact.zip'
-                        def url = "http://${abot_ip}:5000" + "/abot/api/v5/artifacts/execFeatureSummary?foldername=${lastArtTimeStamp}"
-                        def params = ""
-                        getResult = sendRestReq(url, 'GET', params, 'application/json')
+                        def getResulturl = "http://${abot_ip}:5000" + "/abot/api/v5/artifacts/execFeatureSummary?foldername=${lastArtTimeStamp}"
+                        def getResultparams = ""
+                        getResult = sendRestReq(getResulturl, 'GET', getResultparams, 'application/json')
                         getResult = readJSON text: getResult.content
                         createHtmlTableBody (getResult)                        
                     } catch (err) {
