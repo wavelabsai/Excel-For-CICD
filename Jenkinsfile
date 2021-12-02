@@ -29,13 +29,13 @@ pipeline {
                         }
                     } catch (err) {
                         echo err.getMessage()
-                        echo "Error detected, we will exit here."
                         withCredentials([usernamePassword(credentialsId: 'openstack_user_password', passwordVariable: 'OPENSTACK_PASSWORD', usernameVariable: 'OPENSTACK_USER')]) {
                             dir('terraform') {
                                 sh ("terraform destroy -var='openstack_password=${OPENSTACK_PASSWORD}' -var='prefix=${env.prefix}' -auto-approve")
                                 archiveArtifacts artifacts: 'terraform.tfstate'
                             }
                         }
+                        error "Error detected, we will exit here."
                     } finally {
                         dir('terraform') {
                             archiveArtifacts artifacts: 'terraform.tfstate'
