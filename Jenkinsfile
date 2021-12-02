@@ -36,7 +36,6 @@ pipeline {
                                 archiveArtifacts artifacts: 'terraform.tfstate'
                             }
                         }
-                        error
                     } finally {
                         dir('terraform') {
                             archiveArtifacts artifacts: 'terraform.tfstate'
