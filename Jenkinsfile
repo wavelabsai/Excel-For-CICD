@@ -4,6 +4,7 @@ pipeline {
         string(name: 'ARTIFACTID', defaultValue: 'https://artifactory.magmacore.org/artifactory/debian-test/pool/focal-ci/magma_1.7.0-1637259345-3c88ec27_amd64.deb', description: 'Download URL to the Deb package')
         booleanParam(name: 'UPGRADE', defaultValue: true, description: 'Do you want to upgrade to 5G version of AGW?')
         booleanParam(name: 'ABotInt', defaultValue: true, description: 'Do you want to Integrate ABot Test framework?')
+        booleanParam(name: 'TestCaseName', defaultValue: '23401-4g-magma', description: 'Mention the test Case that you want to execute.')
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '3'));
@@ -101,8 +102,10 @@ pipeline {
                     }
                     ipDataFromJson = readYaml file: 'ansible/orc8r_ansible_hosts'
                     mmeIP = ipDataFromJson.all.vars.eth1
-                    configChangeSta = sh(returnStdout: true, script: """curl --request POST http://${abot_ip}:5000/abot/api/v5/update_config_properties?filename=/etc/rebaca-test-suite/config/magma/nodes-all.propertie -d '{"update":{"MME1.SecureShell.IPAddress":"${mmeIP}"}}'""").trim()
-                    configChangeSta = readJSON text: configChangeSta
+                    def url = "http://${abot_ip}:5000" + '/abot/api/v5/update_config_properties?filename=/etc/rebaca-test-suite/config/magma/nodes-all.properties'
+                    def params = "{\"update\":{\"MME1.SecureShell.IPAddress\":\"${mmeIP}\"}}"
+                    configChangeSta = sendRestReq(url, 'POST', params, 'application/json')
+                    configChangeSta = readJSON text: configChangeSta.content
                     if ( configChangeSta.Status.toString() != "OK" ) {
                         error "Error configuring the MME IP in ABot."
                     }
@@ -114,13 +117,17 @@ pipeline {
             steps {
                 script {
                     def execStatus = true
-                    runFeatureFile = sh(returnStdout: true, script: """curl --request POST http://${abot_ip}:5000/abot/api/v5/feature_files/execute -d '{"params": "23401-4g-magma"}'""").trim()
-                    runFeatureFile = readJSON text: runFeatureFile
+                    def url = "http://${abot_ip}:5000" + '/abot/api/v5/feature_files/execute'
+                    def params = "{\"params\": \"${params.TestCaseName}\"}"
+                    runFeatureFile = sendRestReq(url, 'POST', params, 'application/json')
+                    runFeatureFile = readJSON text: runFeatureFile.content
                     runFeatureFile = runFeatureFile.status.toString()
                     if ( runFeatureFile == "OK" ) {
                         while (execStatus) {
-                            execStatus = sh(returnStdout: true, script: """curl --request GET http://${abot_ip}:5000/abot/api/v5/execution_status""").trim()
-                            execStatus = readJSON text: execStatus
+                            def url = "http://${abot_ip}:5000" + '/abot/api/v5/execution_status'
+                            def params = ""
+                            execStatus = sendRestReq(url, 'GET', params, 'application/json')
+                            execStatus = readJSON text: execStatus.content
                             execStatus = execStatus.status
                             println "Executing Feature Files: "
                             sleep time: 30, unit: 'SECONDS'
@@ -136,20 +143,25 @@ pipeline {
             steps {
                 script {
                     try {
-                        lastArtTimeStamp = sh(returnStdout: true, script: """curl --request GET http://${abot_ip}:5000/abot/api/v5/latest_artifact_name""").trim()
-                        lastArtTimeStamp = readJSON text: lastArtTimeStamp
+                        def url = "http://${abot_ip}:5000" + '/abot/api/v5/latest_artifact_name'
+                        def params = ""
+                        lastArtTimeStamp = sendRestReq(url, 'GET', params, 'application/json')
+                        lastArtTimeStamp = readJSON text: lastArtTimeStamp.content
                         echo lastArtTimeStamp.data.latest_artifact_timestamp.toString()
                         lastArtTimeStamp = lastArtTimeStamp.data.latest_artifact_timestamp.toString()
-                        lastArtUrl = sh(returnStdout: true, script: """curl --request GET http://${abot_ip}:5000/abot/api/v5/artifacts/download?artifact_name=${lastArtTimeStamp}""").trim()
-                        lastArtUrl = readJSON text: lastArtUrl
+                        def url = "http://${abot_ip}:5000" + "/abot/api/v5/artifacts/download?artifact_name=${lastArtTimeStamp}"
+                        def params = ""
+                        lastArtUrl = sendRestReq(url, 'GET', params, 'application/json')
+                        lastArtUrl = readJSON text: lastArtUrl.content
                         fileUrl = lastArtUrl.result.toString()
                         sh(returnStdout: true, script: """curl ${fileUrl} -o testArtifact.zip""")
                         sh(returnStdout: true, script: """if [ ! -d testArtifact ]; then mkdir testArtifact; fi""")
-                        unzip dir: 'testArtifact', glob: '', zipFile: 'testArtifact.zip' 
-                        getResult = sh(returnStdout: true, script: """curl --request GET http://${abot_ip}:5000/abot/api/v5/artifacts/execFeatureSummary?foldername=${lastArtTimeStamp}""").trim()
-                        getResult = readJSON text: getResult
-                        def htmlText = createHtmlTableBody (getResult)
-                        writeFile file: 'testArtifact/logs/sut-logs/magma-epc/MME1/index.html', text: htmlText.toString()                        
+                        unzip dir: 'testArtifact', glob: '', zipFile: 'testArtifact.zip'
+                        def url = "http://${abot_ip}:5000" + "/abot/api/v5/artifacts/execFeatureSummary?foldername=${lastArtTimeStamp}"
+                        def params = ""
+                        getResult = sendRestReq(url, 'GET', params, 'application/json')
+                        getResult = readJSON text: getResult.content
+                        createHtmlTableBody (getResult)                        
                     } catch (err) {
                         println err
                         //deleteDir()
@@ -263,5 +275,39 @@ def createHtmlTableBody (jsonData) {
         </body>
         </html>
         """
-  return engine.createTemplate(tableBody).make([jsonData: jsonData])
+  def htmlText = engine.createTemplate(tableBody).make([jsonData: jsonData])
+  writeFile file: 'testArtifact/logs/sut-logs/magma-epc/MME1/index.html', text: htmlText.toString()
+}
+
+def sendRestReq(def url, def method = 'GET', def data = null, type = null, headerKey = null, headerVal = null) {
+    try{
+        def response = null
+        if (null == url || url.toString().trim().isEmpty()) return response
+        method = method.toUpperCase()
+        switch (method) {
+            case 'GET':
+                response = httpRequest quiet: true, httpMode: method, ignoreSslErrors: true,  url: url, wrapAsMultipart: false
+                break
+            case 'POST':
+            case 'PUT':
+            case 'DELETE':
+                if (null == data) {
+                    response = httpRequest quiet: true, httpMode: method, ignoreSslErrors: true, url: url, wrapAsMultipart: false
+                } else if (headerKey != null && headerVal != null){
+                    // if (null == type || type.toString().trim().isEmpty()) return response
+                    response = httpRequest quiet: true, httpMode: method, ignoreSslErrors: true, url: url, requestBody: "${data}", wrapAsMultipart: false, customHeaders: [[maskValue: false, name: 'Content-Type', value: type], [maskValue: false, name: "${headerKey}", value: "${headerVal}"]]
+                }
+                else {
+                    if (null == type || type.toString().trim().isEmpty()) return response
+                    response = httpRequest quiet: true, httpMode: method, ignoreSslErrors: true, url: url, requestBody: "${data}", wrapAsMultipart: false, customHeaders: [[maskValue: false, name: 'Content-Type', value: type]]
+                }
+                break
+            default:
+                break
+                return response
+        }
+        return response
+    } catch(Exception ex) {
+        return null
+    }
 }
