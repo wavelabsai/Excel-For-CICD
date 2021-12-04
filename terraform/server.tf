@@ -66,5 +66,5 @@ resource "local_file" "ansible_hosts_cfg" {
       agw1_ip = openstack_networking_port_v2.ports.*.all_fixed_ips[1]
     }
   )
-  filename = "../ansible/orc8r_ansible_hosts"
+  filename = "../ansible/agw_ansible_hosts"
 }
