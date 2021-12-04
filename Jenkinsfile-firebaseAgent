@@ -14,6 +14,7 @@ pipeline {
         admin_operator_key_pem = credentials('admin_operator_key_pem')
         admin_operator_pem = credentials('admin_operator_pem')
         abot_ip = "172.16.6.184"
+        testAgentIp = "192.16.0.7"
     }
     stages {
         stage ('Deploy and upgrade AGW') {
@@ -31,33 +32,35 @@ pipeline {
             }
         }
         stage ('Execute Feature File') {
-            when { expression { return params.ABotInt } }
             steps {
                 script {
-                    def execStatus = true
-                    def runFeatureFileurl = "http://${abot_ip}:5000" + '/abot/api/v5/feature_files/execute'
-                    def runFeatureFileparams = "{\"params\": \"${params.TestCaseName}\"}"
-                    runFeatureFile = sendRestReq(runFeatureFileurl, 'POST', runFeatureFileparams, 'application/json')
-                    runFeatureFile = readJSON text: runFeatureFile.content
-                    runFeatureFile = runFeatureFile.status.toString()
-                    if ( runFeatureFile == "OK" ) {
-                        while (execStatus) {
-                            def execStatusurl = "http://${abot_ip}:5000" + '/abot/api/v5/execution_status'
-                            def execStatusparams = ""
-                            execStatus = sendRestReq(execStatusurl, 'GET', execStatusparams, 'application/json')
-                            execStatus = readJSON text: execStatus.content
-                            execStatus = execStatus.status
-                            println "Executing Feature Files: "
-                            sleep time: 30, unit: 'SECONDS'
+                    try {
+                        def execStatus = true
+                        def runFeatureFileurl = "http://${abot_ip}:5000" + '/abot/api/v5/feature_files/execute'
+                        def runFeatureFileparams = "{\"params\": \"${params.TestCaseName}\"}"
+                        runFeatureFile = sendRestReq(runFeatureFileurl, 'POST', runFeatureFileparams, 'application/json')
+                        runFeatureFile = readJSON text: runFeatureFile.content
+                        runFeatureFile = runFeatureFile.status.toString()
+                        if ( runFeatureFile == "OK" ) {
+                            while (execStatus) {
+                                def execStatusurl = "http://${abot_ip}:5000" + '/abot/api/v5/execution_status'
+                                def execStatusparams = ""
+                                execStatus = sendRestReq(execStatusurl, 'GET', execStatusparams, 'application/json')
+                                execStatus = readJSON text: execStatus.content
+                                execStatus = execStatus.status
+                                println "Executing Feature Files: "
+                                sleep time: 30, unit: 'SECONDS'
+                            }
+                        } else {
+                            error "Error running Feature files."
                         }
-                    } else {
-                        error "Error running Feature files."
+                    } catch (err) {
+                        deleteDir()
                     }
                 }
             }
         }
         stage ('Get test result info and download') {
-            when { expression { return params.ABotInt } }
             steps {
                 script {
                     try {
@@ -84,16 +87,25 @@ pipeline {
                         writeFile file: 'testArtifact/logs/sut-logs/magma-epc/MME1/index.html', text: htmlReport.toString()                        
                     } catch (err) {
                         println err
-                        //deleteDir()
+                        deleteDir()
                     } 
                 }
             }
         }
         stage ('Sync ABot test reports to Test Agent') {
-            when { expression { return params.ABotInt } }
             steps {
-                dir ('ansible') {
-                    sh "ansible-playbook transfer_test_result.yaml"
+                script {
+                    try {
+                        def ansibleInventory = """{all: {hosts: 172}}"""
+                        ansInvData = readYaml text: ansibleInventory
+                        ansInvData.all.hosts = params.testAgentIp
+                        writeYaml charset: '', data: ansInvData, file: 'ansible/agw_ansible_hosts'
+                        dir ('ansible') {
+                            sh "ansible-playbook transfer_test_result.yaml"
+                        }
+                    } catch (err) {
+                        deleteDir()
+                    }
                 }
             }
         }
