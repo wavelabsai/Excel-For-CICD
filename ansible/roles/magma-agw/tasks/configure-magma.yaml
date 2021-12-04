@@ -30,28 +30,28 @@
     mode: '0777'
   register: control_proxy_file
 
-# - name: Change the MCC value
-#   lineinfile:
-#     path: /etc/magma/gateway.mconfig
-#     search_string: '"mcc"'
-#     line: '      "mcc": "659",'
-#   register: mConfigMCC
+- name: Change the MCC value
+  lineinfile:
+    path: /etc/magma/gateway.mconfig
+    search_string: '"mcc"'
+    line: '      "mcc": "659",'
+  register: mConfigMCC
 
-# - name: Change the MNC value
-#   lineinfile:
-#     path: /etc/magma/gateway.mconfig
-#     search_string: '"mnc"'
-#     line: '      "mnc": "05",'
-#   register: mConfigMNC
+- name: Change the MNC value
+  lineinfile:
+    path: /etc/magma/gateway.mconfig
+    search_string: '"mnc"'
+    line: '      "mnc": "05",'
+  register: mConfigMNC
 
-# - name: Change the TAC value
-#   replace:
-#     path: /etc/magma/gateway.mconfig
-#     regexp: '"tac": 1'
-#     after: '"mnc"'
-#     before: '"enableDnsCaching"'
-#     replace: '"tac": 11'
-#   register: mConfigTAC
+- name: Change the TAC value
+  replace:
+    path: /etc/magma/gateway.mconfig
+    regexp: '"tac": 1,'
+    after: '"mnc"'
+    before: '"enableDnsCaching"'
+    replace: '"tac": 11,'
+  register: mConfigTAC
 
 - name: Stop magma services
   command: service magma@* stop

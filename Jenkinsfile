@@ -90,7 +90,6 @@ pipeline {
                     agwData.id = agw_name
                     agwData.name = agw_name
                     add5gAgwPostMethod (network_name, agwData)
-                    sleep 120
                 }
             }
         }
@@ -231,54 +230,13 @@ def parseUrl (url) {
     return packageVersion
 }
 
+@NonCPS
 def createHtmlTableBody (jsonData) {
     def engine = new groovy.text.SimpleTemplateEngine()
-    def tableBody = """
-        <!DOCTYPE html>
-        <html>
-        <style>
-        table, th, td {
-        border:1px solid black;
-        }
-        </style>
-        <body>
-        <h2>A basic HTML table</h2>
-        <table style="width:100%">
-        <tr>
-        <th rowspan = "2">Test Case Name</th>
-        <th rowspan = "2">Test Run Result</th>
-        <th colspan = "3">Scenario</th>
-        <th colspan = "4">Steps</th>
-        </tr>
-        <tr>
-        <th>Failed</th>
-        <th>Passed</th>
-        <th>Total</th>
-        <th>Failed</th>
-        <th>Passed</th>
-        <th>Skipped</th>
-        <th>Total</th>
-        </tr>
-        <% for(r in jsonData.feature_summary.result.data) { %>
-        <tr>
-        <td><%= r.featureName %></td>
-        <td><%= r.features.status %></td>
-        <td><%= r.scenario.failed %></td>
-        <td><%= r.scenario.passed %></td>
-        <td><%= r.scenario.total %></td>
-        <td><%= r.steps.failed %></td>
-        <td><%= r.steps.passed %></td>
-        <td><%= r.steps.skipped %></td>
-        <td><%= r.steps.total %></td>
-        </tr>
-        <% } %>
-        </table>
-        </body>
-        </html>
-        """
-  def htmlText = engine.createTemplate(tableBody).make([jsonData: jsonData])
-  println htmlText.toString()
-  writeFile file: 'testArtifact/logs/sut-logs/magma-epc/MME1/index.html', text: htmlText.toString()
+    def tableBody = readFile("../config_files/test_report.html")
+    def htmlText = engine.createTemplate(tableBody).make([jsonData: jsonData])
+    println htmlText.toString()
+    writeFile file: 'testArtifact/logs/sut-logs/magma-epc/MME1/index.html', text: htmlText.toString()
 }
 
 def sendRestReq(def url, def method = 'GET', def data = null, type = null, headerKey = null, headerVal = null) {
