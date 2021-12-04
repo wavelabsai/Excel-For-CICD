@@ -98,7 +98,7 @@ pipeline {
             steps {
                 script {
                     dir('ansible') {
-                        sh "ansible-playbook agw_configure_abot.yaml -vv"
+                        sh "ansible-playbook agw_configure_abot.yaml"
                     }
                     ipDataFromJson = readYaml file: 'ansible/orc8r_ansible_hosts'
                     mmeIP = ipDataFromJson.all.vars.eth1
@@ -172,7 +172,9 @@ pipeline {
         stage ('Sync ABot test reports to Test Agent') {
             when { expression { return params.ABotInt } }
             steps {
-                echo "Create Ansible scripts to sync the reports with test_agent"
+                dir ('ansible') {
+                    sh "ansible-playbook -i 192.16.0.7 transfer_test_result.yaml"
+                }
             }
         }
         stage("Input Stage for Infra Destroy") {
@@ -233,7 +235,7 @@ def parseUrl (url) {
 @NonCPS
 def createHtmlTableBody (jsonData) {
     def engine = new groovy.text.SimpleTemplateEngine()
-    def tableBody = readFile("../config_files/test_report.html")
+    def tableBody = readFile("config_files/test_report.html")
     def htmlText = engine.createTemplate(tableBody).make([jsonData: jsonData])
     println htmlText.toString()
     writeFile file: 'testArtifact/logs/sut-logs/magma-epc/MME1/index.html', text: htmlText.toString()

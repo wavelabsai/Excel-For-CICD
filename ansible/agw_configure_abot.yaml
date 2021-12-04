@@ -13,32 +13,33 @@
         - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWkin+2DjgbnWQ6jNPiRiq/Tae6oEa3QFSmfnvnymYsu4qYGyC33bWkHlvgCmiB7LADansAnShqy8luoyNuAERzsE9Yv3CHm5eQ/N/ROFM0iYlkSpCnY8x+Nbbh6ULjjDeFSfApPIRAsJLXRVu6DW4SBErxSjd69BmJwdAv0/P6sriEJvUSR3xZUY2CLbRG8kzGgOXhEychNdxxN15+KkEN+zelX7XM6sfmEcIRES4NpezOuWWrl4eDBJA8xSSYzdj9iACPx6edJbKen3QrF4muVreNpkd8rziEa0+lDMIK+kxu/ZIalgJCAyX0IiOXJJMiBCGiVWLk4J7dtbK78xv niteshkumar@nblap369"
         - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKShaiuLqwREjDqyW0kCVsX3nO4+vwyHDtjslYHflYqn tapas.mishra@wavelabs.ai"
 
-    # - name: Change the MCC value
-    #   lineinfile:
-    #     path: /etc/magma/gateway.mconfig
-    #     search_string: '"mcc"'
-    #     line: '      "mcc": "659",'
-    #   register: mConfigMCC
-
-    # - name: Change the MNC value
-    #   lineinfile:
-    #     path: /etc/magma/gateway.mconfig
-    #     search_string: '"mnc"'
-    #     line: '      "mnc": "05",'
-    #   register: mConfigMNC
-
-    # - name: Change the TAC value
-    #   replace:
-    #     path: /etc/magma/gateway.mconfig
-    #     regexp: '"tac": 1,'
-    #     after: '"mnc"'
-    #     before: '"enableDnsCaching"'
-    #     replace: '"tac": 11,'
-    #   register: mConfigTAC
-
     - name: Retry until subscriber is not available 
       ansible.builtin.shell: subscriber_cli.py list
       register: result
       until: result.stdout.find("IMSI659050000000111") != -1
+      retries: 50
+      delay: 20
+
+    - name: copy control_proxy file
+      copy:
+        src: roles/magma-agw/files/gateway_mconfig
+        dest: "/etc/magma/gateway_mconfig"
+        mode: '0644'
+      register: gateway_mconfig_file
+
+    - name: Stop magma services
+      command: service magma@* stop
+      when: gateway_mconfig_file.changed
+
+    - name: Start magma services
+      systemd:
+        name: magma@magmad
+        state: started
+      when: gateway_mconfig_file.changed
+
+    - name: Wait for MME PID 
+      ansible.builtin.shell: pidof mme
+      register: result
+      until: result.stdout | length > 0
       retries: 50
       delay: 10
