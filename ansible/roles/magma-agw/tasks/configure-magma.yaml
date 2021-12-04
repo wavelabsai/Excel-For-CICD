@@ -32,11 +32,11 @@
 
 - name: Stop magma services
   command: service magma@* stop
-  when: control_proxy_file.changed or rootCA_file.changed or mConfigMCC.changed or mConfigMNC.changed or mConfigTAC.changed
+  when: control_proxy_file.changed or rootCA_file.changed 
 
 - name: Start magma services
   systemd:
     name: magma@magmad
     state: started
-  when: control_proxy_file.changed or rootCA_file.changed or mConfigMCC.changed or mConfigMNC.changed or mConfigTAC.changed
+  when: control_proxy_file.changed or rootCA_file.changed 
   
