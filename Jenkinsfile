@@ -161,7 +161,8 @@ pipeline {
                         def getResultparams = ""
                         getResult = sendRestReq(getResulturl, 'GET', getResultparams, 'application/json')
                         getResult = readJSON text: getResult.content
-                        createHtmlTableBody (getResult)                        
+                        def tableBody = readFile("config_files/test_report.html")
+                        createHtmlTableBody (getResult, tableBody)                        
                     } catch (err) {
                         println err
                         //deleteDir()
@@ -233,10 +234,9 @@ def parseUrl (url) {
 }
 
 @NonCPS
-def createHtmlTableBody (jsonData) {
+def createHtmlTableBody (jsonData, html) {
     def engine = new groovy.text.SimpleTemplateEngine()
-    def tableBody = readFile("config_files/test_report.html")
-    def htmlText = engine.createTemplate(tableBody).make([jsonData: jsonData])
+    def htmlText = engine.createTemplate(html).make([jsonData: jsonData])
     println htmlText.toString()
     writeFile file: 'testArtifact/logs/sut-logs/magma-epc/MME1/index.html', text: htmlText.toString()
 }
