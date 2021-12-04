@@ -20,13 +20,19 @@ pipeline {
         stage ('Deploy and upgrade AGW') {
             steps {
                 script {
-                    def ansibleInventory = """{all: {hosts: 172}}"""
-                    ansInvData = readYaml text: ansibleInventory
-                    ansInvData.all.hosts = params.agwIp
-                    writeYaml charset: '', data: ansInvData, file: 'ansible/agw_ansible_hosts'
-                    def packageVersion = parseUrl(params.ARTIFACTID)
-                    dir('ansible') {
-                        sh "ansible-playbook agw_deploy.yaml --extra-vars \'magma5gVersion=${packageVersion}\' --tags upgrade5gVersion"
+                    try {
+                        def ansibleInventory = """{all: {hosts: 172}}"""
+                        ansInvData = readYaml text: ansibleInventory
+                        ansInvData.all.hosts = params.agwIp
+                        writeYaml charset: '', data: ansInvData, file: 'ansible/agw_ansible_hosts'
+                        def packageVersion = parseUrl(params.ARTIFACTID)
+                        dir('ansible') {
+                            sh "ansible-playbook agw_deploy.yaml --extra-vars \'magma5gVersion=${packageVersion}\' --tags upgrade5gVersion"
+                        }
+                    } catch (err) {
+                        deleteDir()
+                    } finally {
+                        deleteDir()
                     }
                 }
             }
@@ -56,6 +62,8 @@ pipeline {
                         }
                     } catch (err) {
                         deleteDir()
+                    } finally {
+                        deleteDir ()
                     }
                 }
             }
@@ -88,7 +96,9 @@ pipeline {
                     } catch (err) {
                         println err
                         deleteDir()
-                    } 
+                    } finally {
+                        deleteDir()
+                    }
                 }
             }
         }
@@ -104,6 +114,8 @@ pipeline {
                             sh "ansible-playbook transfer_test_result.yaml"
                         }
                     } catch (err) {
+                        deleteDir()
+                    } finally {
                         deleteDir()
                     }
                 }
