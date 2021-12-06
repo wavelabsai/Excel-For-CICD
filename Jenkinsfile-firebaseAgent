@@ -31,10 +31,10 @@ pipeline {
                             sh "ansible-playbook agw_deploy.yaml --extra-vars \'magma5gVersion=${packageVersion}\' --tags upgrade5gVersion"
                         }
                     } catch (err) {
+                        println err
+                        error err
                         deleteDir()
-                    } finally {
-                        deleteDir()
-                    }
+                    } 
                 }
             }
         }
@@ -62,10 +62,10 @@ pipeline {
                             error "Error running Feature files."
                         }
                     } catch (err) {
+                        println err
+                        error err
                         deleteDir()
-                    } finally {
-                        deleteDir ()
-                    }
+                    } 
                 }
             }
         }
@@ -93,13 +93,13 @@ pipeline {
                         getResult = readJSON text: getResult.content
                         def tableBody = readFile("config_files/test_report.html")
                         def htmlReport = createHtmlTableBody (getResult, tableBody)
+                        println htmlReport.toString()
                         writeFile file: 'testArtifact/logs/sut-logs/magma-epc/MME1/index.html', text: htmlReport.toString()                        
                     } catch (err) {
                         println err
-                        deleteDir()
-                    } finally {
-                        deleteDir()
-                    }
+                        //error err
+                        //deleteDir()
+                    } 
                 }
             }
         }
@@ -107,14 +107,17 @@ pipeline {
             steps {
                 script {
                     try {
+                        sh "rm -rf ansible/agw_ansible_hosts"
                         def ansibleInventory = """{all: {hosts: 172}}"""
                         ansInvData = readYaml text: ansibleInventory
-                        ansInvData.all.hosts = params.testAgentIp
+                        ansInvData.all.hosts = testAgentIp
                         writeYaml charset: '', data: ansInvData, file: 'ansible/agw_ansible_hosts'
                         dir ('ansible') {
                             sh "ansible-playbook transfer_test_result.yaml"
                         }
                     } catch (err) {
+                        println err
+                        error err
                         deleteDir()
                     } finally {
                         deleteDir()
@@ -137,7 +140,6 @@ def parseUrl (url) {
 def createHtmlTableBody (jsonData, html) {
     def engine = new groovy.text.SimpleTemplateEngine()
     def htmlText = engine.createTemplate(html).make([jsonData: jsonData])
-    println htmlText.toString()
     return htmlText
 }
 

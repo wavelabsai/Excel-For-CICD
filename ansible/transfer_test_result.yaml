@@ -7,21 +7,29 @@
       file:
         path: /tmp/test_res_pickle
         state: directory
+        owner: ubuntu
+        group: ubuntu
 
     - name: Copy inventory file
       copy:
         src: "../testArtifact/logs/sut-logs/magma-epc/MME1/index.html"
         dest: "/tmp/test_res_pickle/index.html"
+        owner: ubuntu
+        group: ubuntu
         mode: '0777'
 
     - name: Copy mme.log file
       copy:
         src: "../testArtifact/logs/sut-logs/magma-epc/MME1/mme.log"
         dest: "/tmp/test_res_pickle/mme.log"
+        owner: ubuntu
+        group: ubuntu
         mode: '0777'
-        
+
     - name: Copy syslog
       copy:
         src: "../testArtifact/logs/sut-logs/magma-epc/MME1/syslog"
         dest: "/tmp/test_res_pickle/syslog"
+        owner: ubuntu
+        group: ubuntu
         mode: '0777'
