@@ -84,6 +84,7 @@ pipeline {
                         lastArtUrl = sendRestReq(lastArtUrlurl, 'GET', lastArtUrlparams, 'application/json')
                         lastArtUrl = readJSON text: lastArtUrl.content
                         fileUrl = lastArtUrl.result.toString()
+                        sleep 60
                         sh(returnStdout: true, script: """curl ${fileUrl} -o testArtifact.zip""")
                         sh(returnStdout: true, script: """if [ ! -d testArtifact ]; then mkdir testArtifact; fi""")
                         unzip dir: 'testArtifact', glob: '', zipFile: 'testArtifact.zip'
