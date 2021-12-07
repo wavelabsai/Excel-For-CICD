@@ -15,6 +15,7 @@ pipeline {
         admin_operator_pem = credentials('admin_operator_pem')
         abot_ip = "172.16.6.184"
         testAgentIp = "192.16.0.7"
+        resVerdict = true
     }
     stages {
         stage ('Deploy and upgrade AGW') {
@@ -92,7 +93,6 @@ pipeline {
                         def getResultparams = ""
                         getResult = sendRestReq(getResulturl, 'GET', getResultparams, 'application/json')
                         getResult = readJSON text: getResult.content
-                        def resVerdict = true
                         for ( res in getResult.feature_summary.result.data) {
                             if (res.features.status == "failed" ) {
                                 resVerdict = false
