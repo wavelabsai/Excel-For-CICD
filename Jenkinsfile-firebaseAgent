@@ -123,8 +123,8 @@ pipeline {
                         test_res_pickle = readJSON text: test_res_pickle
                         test_res_pickle.verdict = resVerdict
                         def changedString = test_res_pickle.toString().tr(/"'/,/'"/)
-                        changedString = changedString.replace("true", "True")
-                        changedString = changedString.replace("false", "False")
+                        changedString = changedString.replace("'true'", "True")
+                        changedString = changedString.replace("'false'", "False")
                         changedString = changedString.replace(":", ": ")
                         writeFile file: 'testArtifact/logs/sut-logs/magma-epc/MME1/test_res_pickle', text: changedString
                         dir ('ansible') {
