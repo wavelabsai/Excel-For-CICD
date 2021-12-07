@@ -92,8 +92,14 @@ pipeline {
                         def getResultparams = ""
                         getResult = sendRestReq(getResulturl, 'GET', getResultparams, 'application/json')
                         getResult = readJSON text: getResult.content
+                        def resVerdict = true
+                        for ( res in getResult.feature_summary.result.data) {
+                            if (res.features.status == "failed" ) {
+                                resVerdict = false
+                            }
+                        }
                         def tableBody = readFile("config_files/test_report.html")
-                        def htmlReport = createHtmlTableBody (getResult, tableBody)
+                        def htmlReport = createHtmlTableBody (getResult, tableBody, packageVersion)
                         println htmlReport.toString()
                         writeFile file: 'testArtifact/logs/sut-logs/magma-epc/MME1/index.html', text: htmlReport.toString()                        
                     } catch (err) {
@@ -113,6 +119,14 @@ pipeline {
                         ansInvData = readYaml text: ansibleInventory
                         ansInvData.all.hosts = testAgentIp
                         writeYaml charset: '', data: ansInvData, file: 'ansible/agw_ansible_hosts'
+                        def test_res_pickle = """{"verdict": false, "report": "/tmp/abot_test_result/index.html"}"""
+                        test_res_pickle = readJSON text: test_res_pickle
+                        test_res_pickle.verdict = resVerdict
+                        def changedString = test_res_pickle.toString().tr(/"'/,/'"/)
+                        changedString = changedString.replace("true", "True")
+                        changedString = changedString.replace("false", "False")
+                        changedString = changedString.replace(":", ": ")
+                        writeFile file: 'testArtifact/logs/sut-logs/magma-epc/MME1/test_res_pickle', text: changedString
                         dir ('ansible') {
                             sh "ansible-playbook transfer_test_result.yaml"
                         }
@@ -138,9 +152,9 @@ def parseUrl (url) {
 }
 
 @NonCPS
-def createHtmlTableBody (jsonData, html) {
+def createHtmlTableBody (jsonData, html, packageVersion) {
     def engine = new groovy.text.SimpleTemplateEngine()
-    def htmlText = engine.createTemplate(html).make([jsonData: jsonData])
+    def htmlText = engine.createTemplate(html).make([jsonData: jsonData, packageVersion: packageVersion])
     return htmlText
 }
 
