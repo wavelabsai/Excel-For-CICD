@@ -10,7 +10,7 @@
         owner: ubuntu
         group: ubuntu
 
-    - name: Copy inventory file
+    - name: Copy HTMl Report file
       copy:
         src: "../testArtifact/logs/sut-logs/magma-epc/MME1/index.html"
         dest: "/tmp/abot_test_result/index.html"
@@ -34,10 +34,10 @@
         group: ubuntu
         mode: '0777'
 
-    - name: Copy Test Pickle
+    - name: Copy Test Verdict
       copy:
-        src: "../testArtifact/logs/sut-logs/magma-epc/MME1/test_res_pickle"
-        dest: "/tmp/test_res_pickle"
+        src: "../testArtifact/logs/sut-logs/magma-epc/MME1/test_verdict"
+        dest: "/tmp/abot_test_result/test_verdict"
         owner: ubuntu
         group: ubuntu
         mode: '0777'
