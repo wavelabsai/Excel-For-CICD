@@ -11,11 +11,16 @@ resource "openstack_networking_port_v2" "ports" {
   port_security_enabled = "false"
 }
 
+data "template_file" "user_data" {
+  template = file("${path.module}/templates/user_data.yaml")
+}
+
 resource "openstack_compute_instance_v2" "agw_deployment" {
   name            = "${var.prefix}-agw"
   image_id        = "18b0a432-b94a-414c-83f0-b22d9134f3ec"
   flavor_id       = "${var.flavor_id}"
   key_pair        = openstack_compute_keypair_v2.demo_keypair.name
+  user_data       = data.template_file.user_data.rendered
 
   // security_groups = ["default"]
 
