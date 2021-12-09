@@ -12,7 +12,7 @@
 
     - name: Copy HTMl Report file
       copy:
-        src: "../testArtifact/logs/sut-logs/magma-epc/MME1/index.html"
+        src: "../testResult/index.html"
         dest: "/tmp/abot_test_result/index.html"
         owner: ubuntu
         group: ubuntu
@@ -36,7 +36,7 @@
 
     - name: Copy Test Verdict
       copy:
-        src: "../testArtifact/logs/sut-logs/magma-epc/MME1/test_verdict"
+        src: "../testResult/test_verdict"
         dest: "/tmp/abot_test_result/test_verdict"
         owner: ubuntu
         group: ubuntu

@@ -98,11 +98,12 @@ pipeline {
                                 resVerdict = "False"
                             }
                         }
-                        writeFile file: 'testArtifact/logs/sut-logs/magma-epc/MME1/test_verdict', text: resVerdict
+                        sh(returnStdout: true, script: """if [ ! -d testResult ]; then mkdir testResult; fi""")
+                        writeFile file: 'testResult/test_verdict', text: resVerdict
                         def tableBody = readFile("config_files/test_report.html")
                         def htmlReport = createHtmlTableBody (getResult, tableBody, packageVersion)
                         println htmlReport.toString()
-                        writeFile file: 'testArtifact/logs/sut-logs/magma-epc/MME1/index.html', text: htmlReport.toString()                        
+                        writeFile file: 'testResult/index.html', text: htmlReport.toString()                        
                     } catch (err) {
                         println err
                         //error err
