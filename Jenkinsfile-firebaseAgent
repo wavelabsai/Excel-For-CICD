@@ -25,6 +25,7 @@ pipeline {
                         def ansibleInventory = """{all: {hosts: 172}}"""
                         ansInvData = readYaml text: ansibleInventory
                         ansInvData.all.hosts = params.agwIp
+                        sh(returnStdout: true, script: """if [ -f ansible/agw_ansible_hosts ]; then rm -rf ansible/agw_ansible_hosts; fi""")
                         writeYaml charset: '', data: ansInvData, file: 'ansible/agw_ansible_hosts'
                         def packageVersion = parseUrl(params.ARTIFACTID)
                         sh "chmod 0600 terraform/ssh-keys/id_ed25519"
