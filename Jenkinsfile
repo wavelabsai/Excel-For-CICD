@@ -14,7 +14,7 @@ pipeline {
         prefix= "${JOB_BASE_NAME}-${BUILD_NUMBER}"
         admin_operator_key_pem = credentials('admin_operator_key_pem')
         admin_operator_pem = credentials('admin_operator_pem')
-        abot_ip = "172.16.6.184"
+        abot_ip = "172.16.6.163"
     }
     stages {
         stage ('Create the Infra') {
@@ -100,7 +100,7 @@ pipeline {
                     dir('ansible') {
                         sh "ansible-playbook agw_configure_abot.yaml"
                     }
-                    ipDataFromJson = readYaml file: 'ansible/orc8r_ansible_hosts'
+                    ipDataFromJson = readYaml file: 'ansible/agw_ansible_hosts'
                     mmeIP = ipDataFromJson.all.vars.eth1
                     def url = "http://${abot_ip}:5000" + '/abot/api/v5/update_config_properties?filename=/etc/rebaca-test-suite/config/magma/nodes-all.properties'
                     def params = "{\"update\":{\"MME1.SecureShell.IPAddress\":\"${mmeIP}\"}}"
