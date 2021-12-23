@@ -5,7 +5,18 @@
     dest: "/root/upgrade_agw.sh"
     mode: '0777'
   register: upgrade_file
+- name: Run the equivalent of "apt-get update" as a separate step
+  apt:
+    update_cache: yes
 
+- name: Install a list of packages
+  apt:
+    pkg:
+    - apt-transport-https
+    - gnupg2
+    - wget
+    - ca-certificates
+    
 - name: Upgrade magma
   shell: "echo 'y'| /bin/bash /root/upgrade_agw.sh {{ magma5gVersion }}"
   when: magma5gVersion is defined
