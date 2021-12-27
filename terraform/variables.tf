@@ -39,3 +39,18 @@ variable "flavor_id" {
   type = string
   description = "Openstack Flavor ID"
 }
+
+variable "private_network_id" {
+  type = string
+  description = "Openstack Private Network ID"
+}
+
+variable "public_network_name" {
+  type = string
+  description = "Openstack Public Network Name for Floating IP's"
+}
+
+variable "image_id" {
+  type = string
+  description = "Openstack Image ID to be used to create VM"
+}

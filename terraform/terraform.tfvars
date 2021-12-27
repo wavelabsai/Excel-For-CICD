@@ -6,3 +6,6 @@ public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILk/T0Kth72ob2F1Fq6LWawzXah2FO
 prefix = "demo"
 pvt_key = "./ssh-keys/id_ed25519"
 flavor_id = "4"
+private_network_id = "2416c649-7784-4aac-8ca6-09526f517f1c"
+public_network_name = "public"
+image_id = "18b0a432-b94a-414c-83f0-b22d9134f3ec"

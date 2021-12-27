@@ -1,12 +1,11 @@
 resource "openstack_networking_floatingip_v2" "myip" {
-  pool = "public"
-
+  pool = "${var.public_network_name}"
 }
 
 resource "openstack_networking_port_v2" "ports" {
   count          = 2
   name           = "${format("port-%02d", count.index + 1)}"
-  network_id     = "edb1363e-25d3-46f7-bcab-effec6fd7e49"
+  network_id     = "${var.private_network_id}"
   admin_state_up = "true"
   port_security_enabled = "false"
 }
@@ -17,7 +16,7 @@ data "template_file" "user_data" {
 
 resource "openstack_compute_instance_v2" "agw_deployment" {
   name            = "${var.prefix}-agw"
-  image_id        = "18b0a432-b94a-414c-83f0-b22d9134f3ec"
+  image_id        = "${var.image_id}"
   flavor_id       = "${var.flavor_id}"
   key_pair        = openstack_compute_keypair_v2.demo_keypair.name
   user_data       = data.template_file.user_data.rendered
