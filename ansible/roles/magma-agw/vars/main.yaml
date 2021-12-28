@@ -35,3 +35,4 @@ PACKAGE_LOCATION: /tmp
 MAGMA_ROOT: "{{ magmaHome }}"
 OUTPUT_DIR: /tmp
 DEPLOY_PATH: "{{ magmaHome }}/lte/gateway/deploy"
+configure_dhcp: true

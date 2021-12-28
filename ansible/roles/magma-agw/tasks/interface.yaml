@@ -38,6 +38,7 @@
         address {{ eth0 }}
         netmask 255.255.255.255
   register: network_changes_eth0
+  when: not configure_dhcp
 
 - name: Create eth1 file. 
   copy:
@@ -48,6 +49,24 @@
         address {{ eth1 }}
         netmask 255.255.255.255
   register: network_changes_eth1
+  when: not configure_dhcp
+- name: Create eth0 file. 
+  copy:
+    dest: "{{ INTERFACE_DIR }}/eth0"
+    content: |
+      auto eth0
+        iface eth0 inet dhcp
+  register: network_changes_eth0
+  when: configure_dhcp
+
+- name: Create eth1 file. 
+  copy:
+    dest: "{{ INTERFACE_DIR }}/eth1"
+    content: |
+      auto eth1
+        iface eth1 inet dhcp
+  register: network_changes_eth1
+  when: configure_dhcp
 
 - name: Restart network service for interface eth0
   ansible.builtin.service:
