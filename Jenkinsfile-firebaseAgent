@@ -45,21 +45,14 @@ pipeline {
                 script {
                     try {
                         def execStatus = true
+                        FeatueFileExecStatus (execStatus)
                         def runFeatureFileurl = "http://${abot_ip}:5000" + '/abot/api/v5/feature_files/execute'
                         def runFeatureFileparams = "{\"params\": \"${params.TestCaseName}\"}"
                         runFeatureFile = sendRestReq(runFeatureFileurl, 'POST', runFeatureFileparams, 'application/json')
                         runFeatureFile = readJSON text: runFeatureFile.content
                         runFeatureFile = runFeatureFile.status.toString()
                         if ( runFeatureFile == "OK" ) {
-                            while (execStatus) {
-                                def execStatusurl = "http://${abot_ip}:5000" + '/abot/api/v5/execution_status'
-                                def execStatusparams = ""
-                                execStatus = sendRestReq(execStatusurl, 'GET', execStatusparams, 'application/json')
-                                execStatus = readJSON text: execStatus.content
-                                execStatus = execStatus.status
-                                println "Executing Feature Files: "
-                                sleep time: 30, unit: 'SECONDS'
-                            }
+                            FeatueFileExecStatus (execStatus)
                         } else {
                             error "Error running Feature files."
                         }
@@ -138,6 +131,17 @@ pipeline {
     }
 }
 
+def FeatueFileExecStatus (execStatus) {
+                            while (execStatus) {
+                                def execStatusurl = "http://${abot_ip}:5000" + '/abot/api/v5/execution_status'
+                                def execStatusparams = ""
+                                execStatus = sendRestReq(execStatusurl, 'GET', execStatusparams, 'application/json')
+                                execStatus = readJSON text: execStatus.content
+                                execStatus = execStatus.status
+                                println "Executing Feature Files: "
+                                sleep time: 30, unit: 'SECONDS'
+                            }
+}
 def parseUrl (url) {
     String[] urlArray = url.split("/");
     String lastPath = urlArray[urlArray.length-1];
