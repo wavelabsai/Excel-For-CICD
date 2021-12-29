@@ -18,21 +18,21 @@
         group: ubuntu
         mode: '0777'
 
-    # - name: Copy mme.log file
-    #   copy:
-    #     src: "../testArtifact/logs/sut-logs/magma-epc/MME1/mme.log"
-    #     dest: "/tmp/abot_test_result/mme.log"
-    #     owner: ubuntu
-    #     group: ubuntu
-    #     mode: '0777'
+    - name: Copy mme.log file
+      copy:
+        src: "../testArtifact/logs/sut-logs/magma-epc/AMF1/mme.log"
+        dest: "/tmp/abot_test_result/mme.log"
+        owner: ubuntu
+        group: ubuntu
+        mode: '0777'
 
-    # - name: Copy syslog
-    #   copy:
-    #     src: "../testArtifact/logs/sut-logs/magma-epc/MME1/syslog"
-    #     dest: "/tmp/abot_test_result/syslog"
-    #     owner: ubuntu
-    #     group: ubuntu
-    #     mode: '0777'
+    - name: Copy syslog
+      copy:
+        src: "../testArtifact/logs/sut-logs/magma-epc/AMF1/syslog"
+        dest: "/tmp/abot_test_result/syslog"
+        owner: ubuntu
+        group: ubuntu
+        mode: '0777'
 
     - name: Copy Test Verdict
       copy:

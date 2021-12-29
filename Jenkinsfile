@@ -1,10 +1,10 @@
 pipeline {
     agent any
     parameters {
-        string(name: 'ARTIFACTID', defaultValue: 'https://artifactory.magmacore.org/artifactory/debian-test/pool/focal-ci/magma_1.7.0-1637259345-3c88ec27_amd64.deb', description: 'Download URL to the Deb package')
+        string(name: 'ARTIFACTID', defaultValue: 'https://artifactory.magmacore.org/artifactory/debian-test/pool/focal-ci/magma_1.7.0-1640745493-d0ca0d93_amd64.deb', description: 'Download URL to the Deb package')
         booleanParam(name: 'UPGRADE', defaultValue: true, description: 'Do you want to upgrade to 5G version of AGW?')
         booleanParam(name: 'ABotInt', defaultValue: true, description: 'Do you want to Integrate ABot Test framework?')
-        string(name: 'TestCaseName', defaultValue: '23401-4g-magma', description: 'Mention the test Case that you want to execute.')
+        string(name: 'TestCaseName', defaultValue: 'magma-5g', description: 'Mention the test Case that you want to execute.')
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '3'));
@@ -14,7 +14,7 @@ pipeline {
         prefix= "${JOB_BASE_NAME}-${BUILD_NUMBER}"
         admin_operator_key_pem = credentials('admin_operator_key_pem')
         admin_operator_pem = credentials('admin_operator_pem')
-        abot_ip = "172.16.6.163"
+        abot_ip = "172.16.6.184"
     }
     stages {
         stage ('Create the Infra') {

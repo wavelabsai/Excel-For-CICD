@@ -10,9 +10,6 @@ pipeline {
         timestamps()
     }
     environment {
-        prefix= "${JOB_BASE_NAME}-${BUILD_NUMBER}"
-        admin_operator_key_pem = credentials('admin_operator_key_pem')
-        admin_operator_pem = credentials('admin_operator_pem')
         abot_ip = "172.16.6.184"
         testAgentIp = "192.48.0.109"
         resVerdict = "True"
@@ -132,15 +129,15 @@ pipeline {
 }
 
 def FeatueFileExecStatus (execStatus) {
-                            while (execStatus) {
-                                def execStatusurl = "http://${abot_ip}:5000" + '/abot/api/v5/execution_status'
-                                def execStatusparams = ""
-                                execStatus = sendRestReq(execStatusurl, 'GET', execStatusparams, 'application/json')
-                                execStatus = readJSON text: execStatus.content
-                                execStatus = execStatus.status
-                                println "Executing Feature Files: "
-                                sleep time: 30, unit: 'SECONDS'
-                            }
+    while (execStatus) {
+        def execStatusurl = "http://${abot_ip}:5000" + '/abot/api/v5/execution_status'
+        def execStatusparams = ""
+        execStatus = sendRestReq(execStatusurl, 'GET', execStatusparams, 'application/json')
+        execStatus = readJSON text: execStatus.content
+        execStatus = execStatus.status
+        println "Executing Feature Files: ${params.TestCaseName}"
+        sleep time: 5, unit: 'SECONDS'
+    }
 }
 def parseUrl (url) {
     String[] urlArray = url.split("/");

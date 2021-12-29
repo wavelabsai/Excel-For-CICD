@@ -1,23 +1,20 @@
 ---
-- name: start resolv.conf service
+- name: Start resolvconf service
   systemd:
     state: started
     name: resolvconf
 
-- name: add dns entry to resolv.conf
+- name: Add dns entry to resolv.conf
   lineinfile:
     path: /etc/resolvconf/resolv.conf.d/head
     line: "{{ item }}"
     create: yes
-  loop:
-    - "nameserver 8.8.8.8"
-    - "nameserver 8.8.4.4"
-    - "nameserver 172.16.4.4"
+  loop: "{{ nameservers }}"
     
-- name: restart resolv.conf
+- name: Restart resolvconf service
   systemd:
     state: restarted
     name: resolvconf
 
-- name: manually update resolv.conf
+- name: Update resolv.conf
   command: /usr/sbin/resolvconf -u

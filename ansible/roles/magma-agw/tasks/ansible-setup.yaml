@@ -1,5 +1,5 @@
 ---
-- name: install packages
+- name: Install general packages for Magma and ansible
   apt:
     name: "{{ pkgGateway }}"
     state: present

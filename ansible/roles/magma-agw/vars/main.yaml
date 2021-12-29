@@ -12,6 +12,10 @@ urlAgw: https://raw.githubusercontent.com/magma/magma/master/lte/gateway/deploy/
 pathAgw: "/root/agw_install_ubuntu.sh"
 defaultPassword: magma
 INTERFACE_DIR: "/etc/network/interfaces.d"
+nameservers:
+  - "nameserver 8.8.8.8"
+  - "nameserver 8.8.4.4"
+  - "nameserver 172.16.4.4"
 pkgGateway:
   - sudo
   - curl
