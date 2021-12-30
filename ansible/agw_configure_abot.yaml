@@ -16,7 +16,7 @@
     - name: Retry until subscriber is not available 
       ansible.builtin.shell: subscriber_cli.py list
       register: result
-      until: result.stdout.find("IMSI2227700000000001") != -1
+      until: result.stdout.find("IMSI001010000000007") != -1
       retries: 50
       delay: 20
 
