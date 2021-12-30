@@ -40,3 +40,5 @@ MAGMA_ROOT: "{{ magmaHome }}"
 OUTPUT_DIR: /tmp
 DEPLOY_PATH: "{{ magmaHome }}/lte/gateway/deploy"
 configure_dhcp: true
+eth0_netmask: "255.255.255.255"
+eth1_netmask: "255.255.255.255"

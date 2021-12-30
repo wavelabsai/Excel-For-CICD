@@ -16,10 +16,6 @@
   become: yes
   tags: addUser
 
-- include: magma_setup.yaml
-  become: yes
-  tags: setupMagma
-
 - include: install-magma.yaml
   become: yes
   tags: installMagma1.6
@@ -27,7 +23,7 @@
 - include: configure-magma.yaml
   become: yes
   tags: configureMagma
-  
+
 - include: upgrade.yaml
   become: yes
   tags: upgrade5gVersion

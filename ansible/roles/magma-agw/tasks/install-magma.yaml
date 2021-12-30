@@ -1,3 +1,17 @@
+- name: download github repo
+  git:
+    repo: "{{ magmaRepo }}"
+    dest: "{{ usrHome }}/magma"
+    version: "{{ magmaVersion }}"
+
+- name: copy inventory file
+  copy:
+    src: roles/magma-agw/files/inventory
+    dest: "{{ usrHome }}/inventory"
+    owner: ubuntu
+    group: ubuntu
+    mode: '0644'
+    
 - name: run magma deploy
   command: ansible-playbook -e magma_pkgrepo_host="{{packageRepoHost}}" -e "magma_pkgrepo_dist=focal-{{ buildAgwPackage }}"  -i {{ usrHome }}/inventory {{ deployPath }}/magma_deploy.yml
   args: 

@@ -1,4 +1,4 @@
-- name: copy inventory file
+- name: Copy Login banner file for service status
   copy:
     src: roles/magma-agw/files/99-magma.sh
     dest: "/etc/update-motd.d/99-magma"
@@ -10,7 +10,7 @@
     state: directory
     recurse: yes
 
-- name: copy rootCA file
+- name: Copy rootCA file
   copy:
     src: roles/magma-agw/files/rootCA.pem
     dest: "/var/opt/magma/tmp/certs/rootCA.pem"
@@ -23,7 +23,7 @@
     state: directory
     recurse: yes
 
-- name: copy control_proxy file
+- name: Copy control_proxy file
   copy:
     src: roles/magma-agw/files/control_proxy.yaml
     dest: "/var/opt/magma/configs/control_proxy.yml"

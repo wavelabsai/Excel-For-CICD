@@ -36,7 +36,7 @@
       auto eth0
         iface eth0 inet static
         address {{ eth0 }}
-        netmask 255.255.255.255
+        netmask {{ eth0_netmask }}
   register: network_changes_eth0
   when: not configure_dhcp
 
@@ -47,7 +47,7 @@
       auto eth1
         iface eth1 inet static
         address {{ eth1 }}
-        netmask 255.255.255.255
+        netmask {{ eth1_netmask }}
   register: network_changes_eth1
   when: not configure_dhcp
 
@@ -69,7 +69,7 @@
   register: network_changes_eth1
   when: configure_dhcp
 
-- name: Add networking to the boot 
+- name: Add networking service to statrt during boot 
   ansible.builtin.service:
     name: networking
     enabled: yes
