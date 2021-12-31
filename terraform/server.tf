@@ -33,8 +33,6 @@ resource "openstack_compute_instance_v2" "agw_deployment" {
   
   provisioner "remote-exec" {
     inline = [
-      "sudo apt-get update", 
-      "sudo apt-get upgrade -y",
       "echo '127.0.0.1 localhost ${var.prefix}-agw' | sudo tee /etc/hosts"
       ]
 
