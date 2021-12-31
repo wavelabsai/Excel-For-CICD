@@ -1,12 +1,8 @@
 ---
 
-- include: ansible-setup.yaml
+- include: base.yaml
   become: yes
-  tags: setupPackages
-
-- include: resolver-setup.yaml
-  become: yes
-  tags: setupResolver
+  tags: baseInstall
 
 - include: interface.yaml
   become: yes
@@ -18,12 +14,13 @@
 
 - include: install-magma.yaml
   become: yes
-  tags: installMagma1.6
+  tags: installMagma
+
+- include: config5g.yaml
+  become: yes
+  tags: upgrade5gVersion
+  when: magma_5g_upgrade
 
 - include: configure-magma.yaml
   become: yes
   tags: configureMagma
-
-- include: upgrade.yaml
-  become: yes
-  tags: upgrade5gVersion

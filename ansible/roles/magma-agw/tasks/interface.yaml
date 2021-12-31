@@ -37,7 +37,8 @@
         iface eth0 inet static
         address {{ eth0 }}
         netmask {{ eth0_netmask }}
-  register: network_changes_eth0
+        gateway {{ eth0_gateway }}
+  register: network_changes_eth0_st
   when: not configure_dhcp
 
 - name: Create eth1 file for Static
@@ -48,7 +49,8 @@
         iface eth1 inet static
         address {{ eth1 }}
         netmask {{ eth1_netmask }}
-  register: network_changes_eth1
+        gateway {{ eth1_gateway }}
+  register: network_changes_eth1_st
   when: not configure_dhcp
 
 - name: Create eth0 file for Dynamic
@@ -69,19 +71,19 @@
   register: network_changes_eth1
   when: configure_dhcp
 
+- name: Remove netplan packages
+  shell: apt-get --assume-yes purge nplan netplan.io
+
 - name: Add networking service to statrt during boot 
   ansible.builtin.service:
     name: networking
     enabled: yes
 
-- name: Remove netplan packages
-  shell: apt-get --assume-yes purge nplan netplan.io
-
 - name: Reboot immediately if there was a change.
   shell: "sleep 5 && reboot"
   async: 1
   poll: 0
-  when: network_changes_eth0.changed or network_changes_eth1.changed
+  when: network_changes_eth0.changed or network_changes_eth1.changed or network_changes_eth0_st.changed or network_changes_eth1_st.changed
 
 - name: Wait 300 seconds for port 22 to become open and contain "OpenSSH"
   wait_for:
@@ -91,4 +93,4 @@
     delay: 10
   vars:
     ansible_connection: local
-  when: network_changes_eth0.changed or network_changes_eth1.changed
+  when: network_changes_eth0.changed or network_changes_eth1.changed or network_changes_eth0_st.changed or network_changes_eth1_st.changed

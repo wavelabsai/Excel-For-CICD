@@ -1,6 +1,0 @@
----
-- name: Install general packages for Magma and ansible
-  apt:
-    name: "{{ pkgGateway }}"
-    state: present
-    update_cache: yes

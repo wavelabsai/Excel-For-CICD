@@ -12,7 +12,7 @@
 
 - name: Copy rootCA file
   copy:
-    src: roles/magma-agw/files/rootCA.pem
+    src: "{{ magma_rootCA_path }}"
     dest: "/var/opt/magma/tmp/certs/rootCA.pem"
     mode: '0777'
   register: rootCA_file
@@ -25,7 +25,7 @@
 
 - name: Copy control_proxy file
   copy:
-    src: roles/magma-agw/files/control_proxy.yaml
+    src: "{{ magma_control_proxy_path }}"
     dest: "/var/opt/magma/configs/control_proxy.yml"
     mode: '0777'
   register: control_proxy_file

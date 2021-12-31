@@ -57,3 +57,21 @@ do
 done
 echo $line
 echo ""
+echo $line
+print_center  "SCTP port Status"
+echo $line
+ip=$(ip -4 add | grep eth1 | grep -oP '(?<=inet\s)\d+(\.\d+){3}(\/\d+)?' | cut -d/ -f1)
+if ( netstat -l | grep sctp | grep $ip:36412 > /dev/null ); 
+then 
+  print_data "sctp    $ip:36412   LISTEN"
+else 
+  print_data "sctp    $ip:36412   DOWN"
+fi
+if ( netstat -l | grep sctp | grep $ip:38412 > /dev/null ); 
+then 
+  print_data "sctp    $ip:38412   LISTEN"
+else 
+  print_data "sctp    $ip:38412   DOWN"
+fi
+echo $line
+echo ""
