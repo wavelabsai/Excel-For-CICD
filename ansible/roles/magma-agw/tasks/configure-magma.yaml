@@ -32,6 +32,8 @@
 
 - name: Stop magma services
   command: service magma@* stop
+  retries: 3
+  delay: 10
   when: control_proxy_file.changed or rootCA_file.changed 
 
 - name: Start magma services
