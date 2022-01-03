@@ -44,6 +44,8 @@
   command: service magma@* stop
   retries: 3
   delay: 10
+  register: stopMagma
+  until: stopMagma.rc == 0
   when: mme_yml_file.changed or pipelined_yml_file.changed or subscriberdb_yml_file.changed or sessiond_yml_file.changed
 
 - name: Start magma services
