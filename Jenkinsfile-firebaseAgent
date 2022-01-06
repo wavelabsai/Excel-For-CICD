@@ -27,7 +27,7 @@ pipeline {
                         def packageVersion = parseUrl(params.ARTIFACTID)
                         sh "chmod 0600 terraform/ssh-keys/id_ed25519"
                         dir('ansible') {
-                            sh "ansible-playbook agw_deploy.yaml --extra-vars \'magma5gVersion=${packageVersion}\' --tags upgrade5gVersion"
+                            sh "ansible-playbook agw_deploy.yaml --extra-vars \'magma5gVersion=${packageVersion}\'"
                         }
                     } catch (err) {
                         println err
