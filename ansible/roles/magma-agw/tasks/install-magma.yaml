@@ -151,11 +151,20 @@
   when: magma5gVersion is not defined
   register: upgradeto5g
 
+- name: Remove useless packages from the cache
+  apt:
+    autoclean: yes
+    
+- name: Remove dependencies that are no longer required
+  apt:
+    autoremove: yes
+
 - name: Installing magma.
   become: true
   apt:
     name: "{{ packages }}"
     dpkg_options: 'force-confold,force-confdef,force-overwrite'
+    update_cache: yes
   vars:
     packages:
       - magma={{ magma5gVersion}}
