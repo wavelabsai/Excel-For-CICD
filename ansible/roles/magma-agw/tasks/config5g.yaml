@@ -8,7 +8,7 @@
 
 - name: Disable stateless
   shell: magmad_cli.py config_stateless disable
-  when: upgradeto5g.changed
+  when: magma_5g_upgrade
 
 - name: Copy mme yml file
   copy:
