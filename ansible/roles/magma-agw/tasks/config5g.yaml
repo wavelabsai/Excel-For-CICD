@@ -53,3 +53,10 @@
     name: magma@magmad
     state: started
   when: mme_yml_file.changed or pipelined_yml_file.changed or subscriberdb_yml_file.changed or sessiond_yml_file.changed
+
+- name: Wait for MME PID 
+  ansible.builtin.shell: pidof mme
+  register: result
+  until: result.stdout | length > 0
+  retries: 50
+  delay: 10

@@ -197,7 +197,7 @@ def uploadLogsToGit (packageVersion) {
         sh "cp ../testArtifact/logs/sut-logs/magma-epc/AMF1/syslog syslog-${packageVersion}"
         sh "git config user.email 'tapas.mishra@wavelabs.ai'"
         sh "git config user.name 'Tapas Mishra'"
-        sh "git add . && git commit -am 'Adding report files'"
+        sh "git add . && git commit -am 'Adding report files for the version ${packageVersion}'"
         withCredentials([gitUsernamePassword(credentialsId: 'github_token', gitToolName: 'Default')]) {
             sh "git push --set-upstream origin master"
         }
