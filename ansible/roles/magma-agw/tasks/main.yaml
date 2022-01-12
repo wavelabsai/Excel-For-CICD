@@ -1,26 +1,26 @@
 ---
 
-- include_tasks: base.yaml
+- include: base.yaml
   become: yes
   tags: baseInstall
 
-- include_tasks: interface.yaml
+- include: interface.yaml
   become: yes
   tags: setupInterface
 
-- include_tasks: user.yaml
+- include: user.yaml
   become: yes
   tags: addUser
 
-- include_tasks: install-magma.yaml
+- include: install-magma.yaml
   become: yes
   tags: installMagma
 
-- include_tasks: config5g.yaml
+- include: config5g.yaml
   become: yes
   tags: upgrade5gVersion
   when: magma_5g_upgrade
 
-- include_tasks: configure-magma.yaml
+- include: configure-magma.yaml
   become: yes
   tags: configureMagma
