@@ -231,6 +231,7 @@
   delay: 10
   register: stopMagma
   until: stopMagma.rc == 0
+  when: upgradeto5g.changed
   tags:
     - skipfirstinstall
 
