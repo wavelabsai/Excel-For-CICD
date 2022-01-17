@@ -71,13 +71,10 @@ pipeline {
                         lastArtTimeStamp = readJSON text: lastArtTimeStamp.content
                         echo lastArtTimeStamp.data.latest_artifact_timestamp.toString()
                         lastArtTimeStamp = lastArtTimeStamp.data.latest_artifact_timestamp.toString()
-                        def lastArtUrlurl = "http://${abot_ip}:5000" + "/abot/api/v5/artifacts/download?artifact_name=${lastArtTimeStamp}"
-                        def lastArtUrlparams = ""
-                        lastArtUrl = sendRestReq(lastArtUrlurl, 'GET', lastArtUrlparams, 'application/json') 
-                        lastArtUrl = readJSON text: lastArtUrl.content
-                        println lastArtUrl.toString()
-                        fileUrl = lastArtUrl.result.toString()
-                        sleep 60
+                        if (ffArtifactURL (lastArtTimeStamp)) {
+                            sleep 10
+                        }
+                        fileUrl = ffArtifactURL (lastArtTimeStamp)
                         sh(returnStdout: true, script: """curl ${fileUrl} -o testArtifact.zip""")
                         sh(returnStdout: true, script: """if [ ! -d testArtifact ]; then mkdir testArtifact; fi""")
                         unzip dir: 'testArtifact', glob: '', zipFile: 'testArtifact.zip'
@@ -130,6 +127,15 @@ pipeline {
     }
 }
 
+def ffArtifactURL (lastArtTimeStamp) {
+    def lastArtUrlurl = "http://${abot_ip}:5000" + "/abot/api/v5/artifacts/download?artifact_name=${lastArtTimeStamp}"
+    def lastArtUrlparams = ""
+    lastArtUrl = sendRestReq(lastArtUrlurl, 'GET', lastArtUrlparams, 'application/json') 
+    lastArtUrl = readJSON text: lastArtUrl.content
+    println lastArtUrl.toString()
+    fileUrl = lastArtUrl.result.toString()
+    return fileUrl
+}
 def FeatueFileExecStatus (execStatus) {
     while (execStatus) {
         def execStatusurl = "http://${abot_ip}:5000" + '/abot/api/v5/execution_status'
