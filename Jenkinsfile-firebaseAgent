@@ -73,8 +73,9 @@ pipeline {
                         lastArtTimeStamp = lastArtTimeStamp.data.latest_artifact_timestamp.toString()
                         def lastArtUrlurl = "http://${abot_ip}:5000" + "/abot/api/v5/artifacts/download?artifact_name=${lastArtTimeStamp}"
                         def lastArtUrlparams = ""
-                        lastArtUrl = sendRestReq(lastArtUrlurl, 'GET', lastArtUrlparams, 'application/json')
+                        lastArtUrl = sendRestReq(lastArtUrlurl, 'GET', lastArtUrlparams, 'application/json') 
                         lastArtUrl = readJSON text: lastArtUrl.content
+                        println lastArtUrl.toString()
                         fileUrl = lastArtUrl.result.toString()
                         sleep 60
                         sh(returnStdout: true, script: """curl ${fileUrl} -o testArtifact.zip""")
