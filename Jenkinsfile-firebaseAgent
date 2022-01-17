@@ -134,7 +134,10 @@ def ffArtifactURL (lastArtTimeStamp) {
     lastArtUrl = readJSON text: lastArtUrl.content
     println lastArtUrl.toString()
     fileUrl = lastArtUrl.result.toString()
-    return fileUrl
+    fileUrlstatus = lastArtUrl.status.toString()
+    if (fileUrlstatus == 'OK') {
+        return fileUrl
+    } 
 }
 def FeatueFileExecStatus (execStatus) {
     while (execStatus) {
