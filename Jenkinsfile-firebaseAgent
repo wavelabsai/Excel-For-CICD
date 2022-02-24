@@ -63,7 +63,7 @@ pipeline {
                         deleteDir()
                         notifyBuild('FAILED')
                         error err
-                    } 
+                    }
                 }
             }
         }
@@ -89,9 +89,7 @@ pipeline {
                         sh(returnStdout: true, script: """if [ ! -d testResult ]; then mkdir testResult; fi""")
                         writeFile file: 'testResult/test_verdict', text: resVerdict
                         def tableBody = readFile("config_files/test_report.html")
-                        def htmlReport = createHtmlTableBody (getResult, tableBody, packageVersion)
-                        println htmlReport.toString()
-                        writeFile file: 'testResult/index.html', text: htmlReport.toString()
+                        createHtmlTableBody (getResult, tableBody, packageVersion)
                         if (ffArtifactURL (lastArtTimeStamp)) {
                             sleep 10
                         }
@@ -141,13 +139,14 @@ pipeline {
                         dir ('ansible') {
                             sh "ansible-playbook transfer_test_result.yaml"
                         }
+                        currentBuild.result = "SUCCESS"
                     } catch (err) {
                         println err
                         deleteDir()
                         notifyBuild('FAILED')
                         error err
                     } finally {
-                        notifyBuild()
+                        notifyBuild(currentBuild.result)
                         deleteDir()
                     }
                 }
@@ -193,7 +192,8 @@ def parseUrl (url) {
 def createHtmlTableBody (jsonData, html, packageVersion) {
     def engine = new groovy.text.SimpleTemplateEngine()
     def htmlText = engine.createTemplate(html).make([jsonData: jsonData, packageVersion: packageVersion])
-    return htmlText
+    println htmlText.toString()
+    writeFile file: 'testResult/index.html', text: htmlText.toString()
 }
 
 def sendRestReq(def url, def method = 'GET', def data = null, type = null, headerKey = null, headerVal = null) {
@@ -247,6 +247,7 @@ def uploadLogsToGit (packageVersion) {
 def notifyBuild(String buildStatus = 'STARTED') {
     def details = ""
     buildStatus = buildStatus ?: 'SUCCESS'
+
     def subject = "Job '${env.JOB_NAME}': ${buildStatus} for the AGW artifact ID - ${packageVersion}"
     if (buildStatus == 'STARTED') {
         details = """<p>STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p><p>Check console output at &QUOT;<a href='${env.BUILD_URL}/console'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>"""
