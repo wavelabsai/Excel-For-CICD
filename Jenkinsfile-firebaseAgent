@@ -33,10 +33,10 @@ pipeline {
                         }
                     } catch (err) {
                         println err
-                        error err
                         currentBuild.result = "FAILED"
                         deleteDir()
                         notifyBuild('FAILED')
+                        error err
                     } 
                 }
             }
@@ -59,10 +59,10 @@ pipeline {
                         }
                     } catch (err) {
                         println err
-                        error err
                         currentBuild.result = "FAILED"
                         deleteDir()
                         notifyBuild('FAILED')
+                        error err
                     } 
                 }
             }
@@ -77,6 +77,21 @@ pipeline {
                         lastArtTimeStamp = readJSON text: lastArtTimeStamp.content
                         echo lastArtTimeStamp.data.latest_artifact_timestamp.toString()
                         lastArtTimeStamp = lastArtTimeStamp.data.latest_artifact_timestamp.toString()
+                        def getResulturl = "http://${abot_ip}:5000" + "/abot/api/v5/artifacts/execFeatureSummary?foldername=${lastArtTimeStamp}"
+                        def getResultparams = ""
+                        getResult = sendRestReq(getResulturl, 'GET', getResultparams, 'application/json')
+                        getResult = readJSON text: getResult.content
+                        for ( res in getResult.feature_summary.result.data) {
+                            if (res.features.status == "failed" ) {
+                                resVerdict = "False"
+                            }
+                        }
+                        sh(returnStdout: true, script: """if [ ! -d testResult ]; then mkdir testResult; fi""")
+                        writeFile file: 'testResult/test_verdict', text: resVerdict
+                        def tableBody = readFile("config_files/test_report.html")
+                        def htmlReport = createHtmlTableBody (getResult, tableBody, packageVersion)
+                        println htmlReport.toString()
+                        writeFile file: 'testResult/index.html', text: htmlReport.toString()
                         if (ffArtifactURL (lastArtTimeStamp)) {
                             sleep 10
                         }
@@ -86,10 +101,11 @@ pipeline {
                                 def statusCode = ""
                                 try {
                                     statusCode = sh(script: "curl -o /dev/null -s -w '%{http_code}\\n' ${fileUrl}", returnStdout: true).trim()
-                                    if ( statusCode == "404" ) {
-                                        sh(script: "curl $url -o testArtifact.zip", returnStdout: true)
+                                    if ( statusCode == "200" ) {
+                                        sh(script: "curl ${fileUrl} -o testArtifact.zip", returnStdout: true)
                                         return true 
                                     } else {
+                                        println "Artifact is not ready, http status code is : ${statusCode}"
                                         return false
                                     }
                                 } catch (exception) {
@@ -100,29 +116,15 @@ pipeline {
                         }
                         //sh(returnStdout: true, script: """curl ${fileUrl} -o testArtifact.zip""")
                         sh(returnStdout: true, script: """if [ ! -d testArtifact ]; then mkdir testArtifact; fi""")
-                        unzip dir: 'testArtifact', glob: '', zipFile: 'testArtifact.zip'
-                        def getResulturl = "http://${abot_ip}:5000" + "/abot/api/v5/artifacts/execFeatureSummary?foldername=${lastArtTimeStamp}"
-                        def getResultparams = ""
-                        getResult = sendRestReq(getResulturl, 'GET', getResultparams, 'application/json')
-                        getResult = readJSON text: getResult.content
-                        for ( res in getResult.feature_summary.result.data) {
-                            if (res.features.status == "failed" ) {
-                                resVerdict = "False"
-                            }
-                        }
+                        sh(script: "unzip testArtifact.zip -d testArtifact", retrunStdout: true)
+                        //unzip dir: 'testArtifact', glob: '', zipFile: 'testArtifact.zip'
                         uploadLogsToGit(packageVersion)
-                        sh(returnStdout: true, script: """if [ ! -d testResult ]; then mkdir testResult; fi""")
-                        writeFile file: 'testResult/test_verdict', text: resVerdict
-                        def tableBody = readFile("config_files/test_report.html")
-                        def htmlReport = createHtmlTableBody (getResult, tableBody, packageVersion)
-                        println htmlReport.toString()
-                        writeFile file: 'testResult/index.html', text: htmlReport.toString()                        
                     } catch (err) {
                         println err
-                        error err
-                        currentBuild.result = "FAILED"
-                        deleteDir()
-                        notifyBuild('FAILED')
+                        //currentBuild.result = "FAILED"
+                        //deleteDir()
+                        //notifyBuild('FAILED')
+                        //error err
                     } 
                 }
             }
@@ -141,9 +143,9 @@ pipeline {
                         }
                     } catch (err) {
                         println err
-                        error err
                         deleteDir()
                         notifyBuild('FAILED')
+                        error err
                     } finally {
                         notifyBuild()
                         deleteDir()
@@ -175,7 +177,7 @@ def FeatueFileExecStatus (execStatus) {
         execStatus = readJSON text: execStatus.content
         execStatus = execStatus.status
         println "Executing Feature Files: ${params.TestCaseName}"
-        sleep time: 5, unit: 'SECONDS'
+        sleep time: 20, unit: 'SECONDS'
     }
 }
 
@@ -243,19 +245,20 @@ def uploadLogsToGit (packageVersion) {
 }
 
 def notifyBuild(String buildStatus = 'STARTED') {
+    def details = ""
     buildStatus = buildStatus ?: 'SUCCESS'
     def subject = "Job '${env.JOB_NAME}': ${buildStatus} for the AGW artifact ID - ${packageVersion}"
     if (buildStatus == 'STARTED') {
-        def details = """<p>STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p><p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>"""
+        details = """<p>STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p><p>Check console output at &QUOT;<a href='${env.BUILD_URL}/console'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>"""
     } else if (buildStatus == 'SUCCESS') {
-        def details = """<p>COMPLETED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p><p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>"""
+        details = """<p>COMPLETED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p><p>Check console output at &QUOT;<a href='${env.BUILD_URL}/console'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>"""
     } else {
-        def details = """<p>FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p><p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>"""
+        details = """<p>FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p><p>Check console output at &QUOT;<a href='${env.BUILD_URL}/console'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>"""
     }
     emailext (
         mimeType: 'text/html',
         subject: "[Jenkins] ${subject}",
-        body: details,
+        body: "${details}",
         to: "${env.mailRecipients}"
     )
 }
