@@ -20,7 +20,6 @@ pipeline {
             steps {
                 script {
                     try {
-                        notifyBuild('STARTED')
                         def ansibleInventory = """{all: {hosts: 172}}"""
                         ansInvData = readYaml text: ansibleInventory
                         ansInvData.all.hosts = params.agwIp
@@ -28,6 +27,7 @@ pipeline {
                         writeYaml charset: '', data: ansInvData, file: 'ansible/agw_ansible_hosts'
                         def packageVersion = parseUrl(params.ARTIFACTID)
                         sh "chmod 0600 terraform/ssh-keys/id_ed25519"
+                        notifyBuild('STARTED')
                         dir('ansible') {
                             sh "ansible-playbook agw_deploy.yaml --extra-vars \'magma5gVersion=${packageVersion}\' --skip-tags [baseInstall,setupInterface,addUser]"
                         }
@@ -86,7 +86,7 @@ pipeline {
                                 def statusCode = ""
                                 try {
                                     statusCode = sh(script: "curl -o /dev/null -s -w '%{http_code}\\n' ${fileUrl}", returnStdout: true).trim()
-                                    if ( statusCode == "200" ) {
+                                    if ( statusCode == "404" ) {
                                         sh(script: "curl $url -o testArtifact.zip", returnStdout: true)
                                         return true 
                                     } else {
