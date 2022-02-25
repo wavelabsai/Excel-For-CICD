@@ -77,19 +77,7 @@ pipeline {
                         lastArtTimeStamp = readJSON text: lastArtTimeStamp.content
                         echo lastArtTimeStamp.data.latest_artifact_timestamp.toString()
                         lastArtTimeStamp = lastArtTimeStamp.data.latest_artifact_timestamp.toString()
-                        def getResulturl = "http://${abot_ip}:5000" + "/abot/api/v5/artifacts/execFeatureSummary?foldername=${lastArtTimeStamp}"
-                        def getResultparams = ""
-                        getResult = sendRestReq(getResulturl, 'GET', getResultparams, 'application/json')
-                        getResult = readJSON text: getResult.content
-                        for ( res in getResult.feature_summary.result.data) {
-                            if (res.features.status == "failed" ) {
-                                resVerdict = "False"
-                            }
-                        }
-                        sh(returnStdout: true, script: """if [ ! -d testResult ]; then mkdir testResult; fi""")
-                        writeFile file: 'testResult/test_verdict', text: resVerdict
-                        def tableBody = readFile("config_files/test_report.html")
-                        createHtmlTableBody (getResult, tableBody, packageVersion)
+
                         if (ffArtifactURL (lastArtTimeStamp)) {
                             sleep 10
                         }
@@ -117,6 +105,19 @@ pipeline {
                         sh(script: "unzip testArtifact.zip -d testArtifact", retrunStdout: true)
                         //unzip dir: 'testArtifact', glob: '', zipFile: 'testArtifact.zip'
                         uploadLogsToGit(packageVersion)
+                        def getResulturl = "http://${abot_ip}:5000" + "/abot/api/v5/artifacts/execFeatureSummary?foldername=${lastArtTimeStamp}"
+                        def getResultparams = ""
+                        getResult = sendRestReq(getResulturl, 'GET', getResultparams, 'application/json')
+                        getResult = readJSON text: getResult.content
+                        for ( res in getResult.feature_summary.result.data) {
+                            if (res.features.status == "failed" ) {
+                                resVerdict = "False"
+                            }
+                        }
+                        sh(returnStdout: true, script: """if [ ! -d testResult ]; then mkdir testResult; fi""")
+                        writeFile file: 'testResult/test_verdict', text: resVerdict
+                        def tableBody = readFile("config_files/test_report.html")
+                        createHtmlTableBody (getResult, tableBody, packageVersion)
                     } catch (err) {
                         println err
                         //currentBuild.result = "FAILED"
