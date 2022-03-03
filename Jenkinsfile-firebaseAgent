@@ -7,6 +7,7 @@ pipeline {
     }
     options {
         buildDiscarder(logRotator(daysToKeepStr: '2'));
+        disableConcurrentBuilds();
         timestamps()
     }
     environment {
