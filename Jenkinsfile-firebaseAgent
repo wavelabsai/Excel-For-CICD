@@ -14,7 +14,7 @@ pipeline {
         abot_ip = "172.16.4.37"
         testAgentIp = "172.16.6.112"
         resVerdict = "True"
-        mailRecipients = "tapas.mishra@wavelabs.ai, testing@wavelabs.ai"
+        mailRecipients = "testing@wavelabs.ai"
     }
     stages {
         stage ('Deploy and upgrade AGW') {

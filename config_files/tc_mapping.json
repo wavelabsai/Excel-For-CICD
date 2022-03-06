@@ -1,0 +1,202 @@
+{
+    "CPE_Relocated_One_Location_To_Another.feature": {
+      "Tctype": "1.7-Alpha",
+      "testid": "TIP-FWA-OCN-FUNC-01-TC016"
+    },
+    "5G_Registration_PDU_Session_Establishment.feature": {
+      "Tctype": "1.7-Alpha",
+      "testid": "TIP-FWA-OCN-FUNC-01-TC007"
+    },
+    "Initial_Reg_Dereg_scale.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC001"
+    },
+    "UE_Authentication.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC002"
+    },
+    "OCN_access_service_predefined_loc.feature": {
+      "Tctype": "1.7-Alpha",
+      "testid": "TIP-FWA-OCN-FUNC-01-TC017"
+    },
+    "NG_Setup_Failure_Unknown_PLMN.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC003"
+    },
+    "5G_Initial_registration_gNB1_gNB2.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC004"
+    },
+    "multi_gNB_Registration.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC005"
+    },
+    "Initial_Registration_with_GUTI.feature": {
+      "Tctype": "1.7-Alpha",
+      "testid": "TIP-FWA-OCN-FUNC-01-TC003"
+    },
+    "PDU_Session_Release.feature": {
+      "Tctype": "1.7-Alpha",
+      "testid": "MGM-5GSA-FUNC-TC006"
+    },
+    "NG_Setup_Request_Magma.feature": {
+      "Tctype": "1.7-Alpha",
+      "testid": "TIP-FWA-OCN-FUNC-01-TC001"
+    },
+    "OCN_supports_basic_control_functions.feature": {
+      "Tctype": "1.7-Alpha",
+      "testid": "TIP-FWA-OCN-FUNC-01-TC019"
+    },
+    "Verify_NG_setup_with_sst_non01.feature": {
+      "Tctype": "Futura",
+      "testid": "MGM-5GSA-FUNC-TC007"
+    },
+    "5G_Hybrid_GUTI_PDU.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC008"
+    },
+    "PDU_session_estbping_acc_deregister.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC009"
+    },
+    "OCN_supports_5Qi.feature": {
+      "Tctype": "1.7-Alpha",
+      "testid": "TIP-FWA-OCN-FUNC-01-TC028"
+    },
+    "PDU_SessionEstb_accept_Dereg.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC010"
+    },
+    "5G_reg_reject_UEsecurity_mismatch.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC011"
+    },
+    "5G_Registration_PDU_Session_Establishment_with_ping_data.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC012"
+    },
+    "Reg_with_guti_validUE1_invalidUE2.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC013"
+    },
+    "5G_UE_Initiated_Deregistration.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC014"
+    },
+    "NG_SETUP_gnb2_gnb1.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC015"
+    },
+    "5G_Initial_Registration.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC016"
+    },
+    "Simple_subcriber_mgmt.feature": {
+      "Tctype": "1.7-Alpha",
+      "testid": "TIP-FWA-OCN-FUNC-01-TC020"
+    },
+    "Valid_UE_Invalid_UE.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC017"
+    },
+    "5G_Registration_reject.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC018"
+    },
+    "Session_Modification_procedure_IPv4.feature": {
+      "Tctype": "1.7-Alpha",
+      "testid": "TIP-FWA-OCN-FUNC-01-TC012"
+    },
+    "Periodic_Registration.feature": {
+      "Tctype": "1.7-Alpha",
+      "testid": "TIP-FWA-OCN-FUNC-01-TC004"
+    },
+    "N1N2MessageSubscribe_service_operation.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC019"
+    },
+    "5G_Multi_PDU_Session.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC020"
+    },
+    "AMF_Initiated_AN_Release_Procedure.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC021"
+    },
+    "5G_Initial_Reg_Authentication_Failure.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC022"
+    },
+    "Identification_Procedure.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC023"
+    },
+    "NAS_Security_Procedure.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC024"
+    },
+    "UE_Initiated_AN_Release_Procedure.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC025"
+    },
+    "Mobility_Based_Registration.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC026"
+    },
+    "5G_reg_reject_invalidTAC.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC027"
+    },
+    "PDU_est_flow_without_ue_context.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC028"
+    },
+    "Skip_ue_context_reg_ue_inactivity.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC029"
+    },
+    "Loop_Subsequent_GUTI_with_single_subscriber.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC030"
+    },
+    "Deregistration_before_reg_complete.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC031"
+    },
+    "verify_T3560_expiry_resend_security_CMD.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC032"
+    },
+    "verify_T3570_expiry_Idenity_req_resend.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC033"
+    },
+    "verify_T3560_expiry_authentication.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC034"
+    },
+    "Verify_T3592_expiry_PDUrelcmd_again_with_Dereg.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC035"
+    },
+    "Skip_UeContextReq_verify_UE_inactivity_flow.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC036"
+    },
+    "Dereg_switchOff_suci.feature": {
+      "Tctype": "1.7-Alpha",
+      "testid": "TIP-FWA-OCN-FUNC-01-TC002"
+    },
+    "Verify_T3592_expiry_PDUrelcmd_again_noDreg.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC037"
+    },
+    "Skip_UeContextReq_verify_pdu_est_flow.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC038"
+    },
+    "Dereg_switchOff_GUTI.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC039"
+    }
+  }
