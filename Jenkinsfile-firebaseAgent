@@ -12,7 +12,7 @@ pipeline {
     }
     environment {
         abot_ip = "172.16.4.37"
-        testAgentIp = "172.16.6.112"
+        testAgentIp = "172.16.5.70"
         resVerdict = "True"
         mailRecipients = "testing@wavelabs.ai"
     }
