@@ -48,7 +48,7 @@
       "testid": "TIP-FWA-OCN-FUNC-01-TC019"
     },
     "Verify_NG_setup_with_sst_non01.feature": {
-      "Tctype": "Futura",
+      "Tctype": "Future",
       "testid": "MGM-5GSA-FUNC-TC007"
     },
     "5G_Hybrid_GUTI_PDU.feature": {

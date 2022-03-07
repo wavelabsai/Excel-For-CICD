@@ -118,7 +118,8 @@ pipeline {
                         sh(returnStdout: true, script: """if [ ! -d testResult ]; then mkdir testResult; fi""")
                         writeFile file: 'testResult/test_verdict', text: resVerdict
                         def tableBody = readFile("config_files/test_report.html")
-                        createHtmlTableBody (getResult, tableBody, packageVersion)
+                        def ffMappingData = readJSON file: "config_files/tc_mapping.json"
+                        createHtmlTableBody (ffMappingData, getResult, tableBody, packageVersion)
                     } catch (err) {
                         println err
                         //currentBuild.result = "FAILED"
@@ -191,7 +192,16 @@ def parseUrl (url) {
 }
 
 @NonCPS
-def createHtmlTableBody (jsonData, html, packageVersion) {
+def createHtmlTableBody (ffMappingData, jsonData, html, packageVersion) {
+    ffMappingData.each { ffName, data ->
+        jsonData.feature_summary.result.data.each { 
+            if ( it.featureName == ffName ) {
+                it.mgmaTcType = data.Tctype
+                it.magmaTestId = data.testid
+            }
+        }
+    }
+    jsonData.feature_summary.result.data = jsonData.feature_summary.result.data.sort { it.mgmaTcType }
     def engine = new groovy.text.SimpleTemplateEngine()
     def htmlText = engine.createTemplate(html).make([jsonData: jsonData, packageVersion: packageVersion])
     println htmlText.toString()
