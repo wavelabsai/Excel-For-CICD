@@ -1,10 +1,10 @@
 {
     "CPE_Relocated_One_Location_To_Another.feature": {
-      "Tctype": "1.7-Alpha",
+      "Tctype": "1.7-5GAlpha",
       "testid": "TIP-FWA-OCN-FUNC-01-TC016"
     },
     "5G_Registration_PDU_Session_Establishment.feature": {
-      "Tctype": "1.7-Alpha",
+      "Tctype": "1.7-5GAlpha",
       "testid": "TIP-FWA-OCN-FUNC-01-TC007"
     },
     "Initial_Reg_Dereg_scale.feature": {
@@ -16,7 +16,7 @@
       "testid": "MGM-5GSA-FUNC-TC002"
     },
     "OCN_access_service_predefined_loc.feature": {
-      "Tctype": "1.7-Alpha",
+      "Tctype": "1.7-5GAlpha",
       "testid": "TIP-FWA-OCN-FUNC-01-TC017"
     },
     "NG_Setup_Failure_Unknown_PLMN.feature": {
@@ -32,19 +32,19 @@
       "testid": "MGM-5GSA-FUNC-TC005"
     },
     "Initial_Registration_with_GUTI.feature": {
-      "Tctype": "1.7-Alpha",
+      "Tctype": "1.7-5GAlpha",
       "testid": "TIP-FWA-OCN-FUNC-01-TC003"
     },
     "PDU_Session_Release.feature": {
-      "Tctype": "1.7-Alpha",
+      "Tctype": "1.7-5GAlpha",
       "testid": "MGM-5GSA-FUNC-TC006"
     },
     "NG_Setup_Request_Magma.feature": {
-      "Tctype": "1.7-Alpha",
+      "Tctype": "1.7-5GAlpha",
       "testid": "TIP-FWA-OCN-FUNC-01-TC001"
     },
     "OCN_supports_basic_control_functions.feature": {
-      "Tctype": "1.7-Alpha",
+      "Tctype": "1.7-5GAlpha",
       "testid": "TIP-FWA-OCN-FUNC-01-TC019"
     },
     "Verify_NG_setup_with_sst_non01.feature": {
@@ -60,7 +60,7 @@
       "testid": "MGM-5GSA-FUNC-TC009"
     },
     "OCN_supports_5Qi.feature": {
-      "Tctype": "1.7-Alpha",
+      "Tctype": "1.7-5GAlpha",
       "testid": "TIP-FWA-OCN-FUNC-01-TC028"
     },
     "PDU_SessionEstb_accept_Dereg.feature": {
@@ -92,7 +92,7 @@
       "testid": "MGM-5GSA-FUNC-TC016"
     },
     "Simple_subcriber_mgmt.feature": {
-      "Tctype": "1.7-Alpha",
+      "Tctype": "1.7-5GAlpha",
       "testid": "TIP-FWA-OCN-FUNC-01-TC020"
     },
     "Valid_UE_Invalid_UE.feature": {
@@ -104,11 +104,11 @@
       "testid": "MGM-5GSA-FUNC-TC018"
     },
     "Session_Modification_procedure_IPv4.feature": {
-      "Tctype": "1.7-Alpha",
+      "Tctype": "1.7-5GAlpha",
       "testid": "TIP-FWA-OCN-FUNC-01-TC012"
     },
     "Periodic_Registration.feature": {
-      "Tctype": "1.7-Alpha",
+      "Tctype": "1.7-5GAlpha",
       "testid": "TIP-FWA-OCN-FUNC-01-TC004"
     },
     "N1N2MessageSubscribe_service_operation.feature": {
@@ -184,7 +184,7 @@
       "testid": "MGM-5GSA-FUNC-TC036"
     },
     "Dereg_switchOff_suci.feature": {
-      "Tctype": "1.7-Alpha",
+      "Tctype": "1.7-5GAlpha",
       "testid": "TIP-FWA-OCN-FUNC-01-TC002"
     },
     "Verify_T3592_expiry_PDUrelcmd_again_noDreg.feature": {
@@ -198,5 +198,9 @@
     "Dereg_switchOff_GUTI.feature": {
       "Tctype": "Future",
       "testid": "MGM-5GSA-FUNC-TC039"
+    },
+    "PDU_rejection_invalid_DNN.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC088"
     }
   }
