@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head runat="server">
+<title></title>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+</head>
+<style>
+table, th, td {
+border:1px solid black;
+}
+</style>
+<body>
+<script type="text/javascript">
+$(function() {
+var cell = $('td');
+cell.each(function() {
+var cell_value = $(this).html();
+if(cell_value == 'PASS') $(this).css({
+'background': 'green'
+});
+if(cell_value == 'FAIL') $(this).css({
+'background': 'red'
+});
+});
+});
+</script>

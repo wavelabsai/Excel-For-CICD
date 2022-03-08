@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html>
-<style>
-table, th, td {
-border:1px solid black;
-}
-</style>
-<body>
+<form id="form1" runat="server"></form>
 <h2>Wavelabs 5G SI test result report.</h2>
 <h3>Magma build : <%= packageVersion %></h3>
 <h3>Test Sut logs :</h3>
@@ -34,16 +27,17 @@ border:1px solid black;
 <td><%= r.magmaTestId %></td>
 <td><%= r.mgmaTcType %></td>
 <td><%= r.featureName %></td>
-<td><%= r.features.status %></td>
-<td><%= r.scenario.failed %></td>
-<td><%= r.scenario.passed %></td>
-<td><%= r.scenario.total %></td>
-<td><%= r.steps.failed %></td>
-<td><%= r.steps.passed %></td>
-<td><%= r.steps.skipped %></td>
-<td><%= r.steps.total %></td>
+<td style='text-align:center; vertical-align:middle'><%= r.features.status %></td>
+<td style='text-align:center; vertical-align:middle'><%= r.scenario.failed %></td>
+<td style='text-align:center; vertical-align:middle'><%= r.scenario.passed %></td>
+<td style='text-align:center; vertical-align:middle'><%= r.scenario.total %></td>
+<td style='text-align:center; vertical-align:middle'><%= r.steps.failed %></td>
+<td style='text-align:center; vertical-align:middle'><%= r.steps.passed %></td>
+<td style='text-align:center; vertical-align:middle'><%= r.steps.skipped %></td>
+<td style='text-align:center; vertical-align:middle'><%= r.steps.total %></td>
 </tr>
 <% } %>
 </table>
+</form>
 </body>
 </html>
