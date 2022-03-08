@@ -118,8 +118,9 @@ pipeline {
                         sh(returnStdout: true, script: """if [ ! -d testResult ]; then mkdir testResult; fi""")
                         writeFile file: 'testResult/test_verdict', text: resVerdict
                         def tableBody = readFile("config_files/test_report.html")
+                        def headHtml = readFile("config_files/test_report_first_part.html")
                         def ffMappingData = readJSON file: "config_files/tc_mapping.json"
-                        createHtmlTableBody (ffMappingData, getResult, tableBody, packageVersion)
+                        createHtmlTableBody (ffMappingData, getResult, tableBody, headHtml, packageVersion)
                     } catch (err) {
                         println err
                         //currentBuild.result = "FAILED"
@@ -192,20 +193,27 @@ def parseUrl (url) {
 }
 
 @NonCPS
-def createHtmlTableBody (ffMappingData, jsonData, html, packageVersion) {
+def createHtmlTableBody (ffMappingData, jsonData, html, html1, packageVersion) {
     ffMappingData.each { ffName, data ->
         jsonData.feature_summary.result.data.each { 
             if ( it.featureName == ffName ) {
+                it.featureName = it.featureName.minus(".feature")
                 it.mgmaTcType = data.Tctype
                 it.magmaTestId = data.testid
+                if ( it.features.status.equalsIgnoreCase("passed") ) {
+                    it.features.status = "PASS"
+                } else {
+                    it.features.status = "FAIL"
+                }
             }
         }
     }
     jsonData.feature_summary.result.data = jsonData.feature_summary.result.data.sort { it.mgmaTcType }
     def engine = new groovy.text.SimpleTemplateEngine()
     def htmlText = engine.createTemplate(html).make([jsonData: jsonData, packageVersion: packageVersion])
-    println htmlText.toString()
-    writeFile file: 'testResult/index.html', text: htmlText.toString()
+    fullhtml = html1.toString() + htmlText.toString()
+    println fullhtml
+    writeFile file: 'testResult/index.html', text: fullhtml
 }
 
 def sendRestReq(def url, def method = 'GET', def data = null, type = null, headerKey = null, headerVal = null) {

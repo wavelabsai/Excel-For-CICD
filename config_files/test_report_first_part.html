@@ -15,10 +15,10 @@ $(function() {
 var cell = $('td');
 cell.each(function() {
 var cell_value = $(this).html();
-if(cell_value == 'passed') $(this).css({
+if(cell_value == 'PASS') $(this).css({
 'background': 'green'
 });
-if(cell_value == 'failed') $(this).css({
+if(cell_value == 'FAIL') $(this).css({
 'background': 'red'
 });
 });
