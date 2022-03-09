@@ -11,7 +11,7 @@ pipeline {
         timestamps()
     }
     environment {
-        abot_ip = "172.16.4.37"
+        abot_ip = "172.16.6.60"
         testAgentIp = "172.16.5.70"
         resVerdict = "True"
         mailRecipients = "testing@wavelabs.ai"
