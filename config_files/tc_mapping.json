@@ -202,5 +202,10 @@
     "PDU_rejection_invalid_DNN.feature": {
       "Tctype": "Future",
       "testid": "MGM-5GSA-FUNC-TC088"
+    },
+    "multi_PDU_diff_DNN.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC089"
     }
   }
+    
