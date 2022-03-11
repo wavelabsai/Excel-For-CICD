@@ -206,6 +206,18 @@
     "multi_PDU_diff_DNN.feature": {
       "Tctype": "Future",
       "testid": "MGM-5GSA-FUNC-TC089"
+    },
+    "Authentication_Reject_invalid_RAND_mac_failure.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC090"
+    },
+    "PDU_Reject_invalid_Session_type.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC091"
+    },
+    "Verify_T3550_Expiry_Reg_Complete_Accept_Failure.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC092"
     }
   }
     
