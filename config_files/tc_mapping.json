@@ -218,6 +218,26 @@
     "Verify_T3550_Expiry_Reg_Complete_Accept_Failure.feature": {
       "Tctype": "Future",
       "testid": "MGM-5GSA-FUNC-TC092"
+    },
+    "Verify_Service_Mode_Reject_cause23.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC093"
+    },
+    "Verify_Service_mode_reject_unspecified.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC094"
+    },
+    "Verify_Service_req_change_RAN_UE_NGAP_ID_servicereq.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC095"
+    }, 
+     "Verify_service_reject_after_max_retry_registration.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC096"
+    },
+    "Verify_service_reject_wrong_TMSI.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC097"
     }
   }
     
