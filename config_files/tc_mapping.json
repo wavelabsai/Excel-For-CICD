@@ -262,6 +262,10 @@
     "5G_authentication_reject_UE_sec_cap.feature": {
       "Tctype": "Future",
       "testid": "MGM-5GSA-FUNC-TC045"
+    },
+    "Loop_Subsequent_SUCI_with_single_subscriber.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC046"
     }
   }
     
