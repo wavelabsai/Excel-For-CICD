@@ -254,6 +254,14 @@
     "multiSession_1invalid_withinvalid_DNN.feature": {
       "Tctype": "Future",
       "testid": "MGM-5GSA-FUNC-TC082"
+    },
+    "5G_Authentication_reject_cause24_scMreject.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC044"
+    },
+    "5G_authentication_reject_UE_sec_cap.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC045"
     }
   }
     
