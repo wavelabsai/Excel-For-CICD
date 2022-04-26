@@ -266,6 +266,10 @@
     "Loop_Subsequent_SUCI_with_single_subscriber.feature": {
       "Tctype": "Future",
       "testid": "MGM-5GSA-FUNC-TC046"
+    },
+    "Verify_auth_reject_cause26_Non5G_auth_unaccept.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC047"
     }
   }
     
