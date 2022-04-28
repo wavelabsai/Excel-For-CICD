@@ -143,10 +143,6 @@
       "Tctype": "Future",
       "testid": "MGM-5GSA-FUNC-TC027"
     },
-    "PDU_est_flow_without_ue_context.feature": {
-      "Tctype": "Future",
-      "testid": "MGM-5GSA-FUNC-TC028"
-    },
     "Skip_ue_context_reg_ue_inactivity.feature": {
       "Tctype": "Future",
       "testid": "MGM-5GSA-FUNC-TC029"
