@@ -107,10 +107,6 @@
       "Tctype": "1.7-5GAlpha",
       "testid": "TIP-FWA-OCN-FUNC-01-TC012"
     },
-    "Periodic_Registration.feature": {
-      "Tctype": "1.7-5GAlpha",
-      "testid": "TIP-FWA-OCN-FUNC-01-TC004"
-    },
     "N1N2MessageSubscribe_service_operation.feature": {
       "Tctype": "Future",
       "testid": "MGM-5GSA-FUNC-TC019"
