@@ -269,7 +269,11 @@
     },
     "Concurrent_2UE_Registration.feature": {
       "Tctype": "Future",
-      "testid": "MGM-5GSA-FUNC-TC049"   
+      "testid": "MGM-5GSA-FUNC-TC049"  
+    },
+    "PDU_reject_missing_DNN.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC050"    
     }
   }
     
