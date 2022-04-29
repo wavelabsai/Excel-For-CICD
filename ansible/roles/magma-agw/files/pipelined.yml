@@ -20,3 +20,6 @@ ovs_multi_tunnel: False
 paging_timeout: 30
 classifier_controller_id: 5
 ovs_gtp_stats_polling_interval: 180
+
+log_level: DEBUG
+magma_print_grpc_payload: true
