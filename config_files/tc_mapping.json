@@ -262,6 +262,10 @@
     "Verify_auth_reject_cause26_Non5G_auth_unaccept.feature": {
       "Tctype": "Future",
       "testid": "MGM-5GSA-FUNC-TC047"
+    },
+    "PDU_Reject_invalid_ID.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC048"
     }
   }
     
