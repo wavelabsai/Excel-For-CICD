@@ -40,6 +40,12 @@
     dest: "/var/opt/magma/configs/sessiond.yml"
   register: sessiond_yml_file
   
+- name: Copy mobilityd yml file
+  copy:
+    src: roles/magma-agw/files/mobilityd.yml
+    dest: "/var/opt/magma/configs/mobilityd.yml"
+  register: mobilityd_yml_file
+  
 - name: Stop magma services
   command: service magma@* stop
   retries: 3
