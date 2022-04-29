@@ -235,7 +235,7 @@
       "Tctype": "Future",
       "testid": "MGM-5GSA-FUNC-TC098"
     },
-    "multiSession_1invalid_withMissing_DNN.feature": {
+    "multiSession_1invalid_withMissing_DNN_IE.feature": {
       "Tctype": "Future",
       "testid": "MGM-5GSA-FUNC-TC099"
     },
