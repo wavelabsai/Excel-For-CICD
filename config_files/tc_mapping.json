@@ -273,7 +273,11 @@
     },
     "PDU_reject_missing_DNN.feature": {
       "Tctype": "Future",
-      "testid": "MGM-5GSA-FUNC-TC050"    
+      "testid": "MGM-5GSA-FUNC-TC050" 
+     },
+    "multiSession_1invalid_withMissing_DNN.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC051"      
     }
   }
     
