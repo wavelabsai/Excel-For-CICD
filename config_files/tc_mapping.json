@@ -313,7 +313,11 @@
       },
     "VerifyPDU_IPv6_ServiceRequestSignaling_ServiceAccept.feature": {
       "Tctype": "Future",
-      "testid": "MGM-5GSA-FUNC-TC060"    
+      "testid": "MGM-5GSA-FUNC-TC060"
+     },
+    "UE_initiated_Periodic_Registration_IdleMode_WithAuthProc.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC061"   
     }
   }
     
