@@ -297,7 +297,11 @@
        },
     "Verify_Service_Reject_for_SReq_MO_Signaling.feature": {
       "Tctype": "Future",
-      "testid": "MGM-5GSA-FUNC-TC056"  
+      "testid": "MGM-5GSA-FUNC-TC056" 
+      },
+    "UE_Triggered_Service_Request.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC057"
     }
   }
     
