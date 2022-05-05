@@ -277,7 +277,27 @@
      },
     "multiSession_1invalid_withMissing_DNN.feature": {
       "Tctype": "Future",
-      "testid": "MGM-5GSA-FUNC-TC051"      
+      "testid": "MGM-5GSA-FUNC-TC051" 
+      },
+    "Verify5GUE_MultiPDUSessions_Diff_SessionTypes.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC052" 
+      },
+    "Verify5GUE_IPv4v6_DualStack_traffic.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC053"   
+       },
+    "Verify_5G_UE_IPv6_traffic.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC054"
+         },
+    "Verify_multisessionUE_idle_to_active_MO_signalling.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC055"
+       },
+    "Verify_Service_Reject_for_SReq_MO_Signaling.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC056"  
     }
   }
     
