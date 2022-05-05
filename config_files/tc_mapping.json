@@ -302,6 +302,10 @@
     "UE_Triggered_Service_Request.feature": {
       "Tctype": "Future",
       "testid": "MGM-5GSA-FUNC-TC057"
+     },
+    "VerifyPDUsessionestablishmentafterServiceRequestSignaling_ServiceAccept.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC058"   
     }
   }
     
