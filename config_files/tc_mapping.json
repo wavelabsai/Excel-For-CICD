@@ -305,7 +305,11 @@
      },
     "VerifyPDUsessionestablishmentafterServiceRequestSignaling_ServiceAccept.feature": {
       "Tctype": "Future",
-      "testid": "MGM-5GSA-FUNC-TC058"   
+      "testid": "MGM-5GSA-FUNC-TC058"
+      },
+    "Concurrent_2UE_SUCI_Registration.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC059"    
     }
   }
     
