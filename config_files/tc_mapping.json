@@ -309,7 +309,11 @@
       },
     "Concurrent_2UE_SUCI_Registration.feature": {
       "Tctype": "Future",
-      "testid": "MGM-5GSA-FUNC-TC059"    
+      "testid": "MGM-5GSA-FUNC-TC059"
+      },
+    "VerifyPDU_IPv6_ServiceRequestSignaling_ServiceAccept.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC060"    
     }
   }
     
