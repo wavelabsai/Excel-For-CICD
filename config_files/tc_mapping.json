@@ -346,6 +346,10 @@
     "Multi_label_invalid_DNN_valid_DNN.feature": {
       "Tctype": "Future",
       "testid": "MGM-5GSA-FUNC-TC068"
+     },
+    "Verify_outofrange_DNN.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC069"
     }
   }
     
