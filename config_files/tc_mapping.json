@@ -337,7 +337,11 @@
      },
     "Verify_maximum_DNN_length.feature": {
       "Tctype": "Future",
-      "testid": "MGM-5GSA-FUNC-TC066"    
+      "testid": "MGM-5GSA-FUNC-TC066"  
+     },
+    "Invalid_DNN_ipv4_ipv6_dual_rejection.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC067"
     }
   }
     
