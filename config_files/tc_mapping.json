@@ -329,7 +329,11 @@
      },
     "multi_label_PDU_IPv6.feature": {
       "Tctype": "Future",
-      "testid": "MGM-5GSA-FUNC-TC064"    
+      "testid": "MGM-5GSA-FUNC-TC064"
+     },
+    "verify_min_length_DNN.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC065" 
     }
   }
     
