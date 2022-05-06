@@ -350,6 +350,10 @@
     "Verify_outofrange_DNN.feature": {
       "Tctype": "Future",
       "testid": "MGM-5GSA-FUNC-TC069"
+     },
+    "multi_label_PDU_IPv4v6_dual.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC070"   
     }
   }
     
