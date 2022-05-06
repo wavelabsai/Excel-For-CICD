@@ -342,6 +342,10 @@
     "Invalid_DNN_ipv4_ipv6_dual_rejection.feature": {
       "Tctype": "Future",
       "testid": "MGM-5GSA-FUNC-TC067"
+     },
+    "Multi_label_invalid_DNN_valid_DNN.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC068"
     }
   }
     
