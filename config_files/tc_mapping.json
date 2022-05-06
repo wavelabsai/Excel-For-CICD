@@ -317,7 +317,11 @@
      },
     "UE_initiated_Periodic_Registration_IdleMode_WithAuthProc.feature": {
       "Tctype": "Future",
-      "testid": "MGM-5GSA-FUNC-TC061"   
+      "testid": "MGM-5GSA-FUNC-TC061"
+      },
+    "Verify_service_reject_wrong_mobile_identity.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC062"   
     }
   }
     
