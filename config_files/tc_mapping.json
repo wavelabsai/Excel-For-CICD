@@ -334,6 +334,10 @@
     "verify_min_length_DNN.feature": {
       "Tctype": "Future",
       "testid": "MGM-5GSA-FUNC-TC065" 
+     },
+    "Verify_maximum_DNN_length.feature": {
+      "Tctype": "Future",
+      "testid": "MGM-5GSA-FUNC-TC066"    
     }
   }
     
