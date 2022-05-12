@@ -121,6 +121,7 @@ pipeline {
                         def headHtml = readFile("config_files/test_report_first_part.html")
                         def ffMappingData = readJSON file: "config_files/tc_mapping.json"
                         createHtmlTableBody (ffMappingData, getResult, tableBody, headHtml, packageVersion)
+                        //sh(returnStdout: true, script: """python config_files/arg_test.py -d data.json -i Abot.xlsx -o Abot.xlsx -b ${BUILD_NUMBER} -t pass""")
                     } catch (err) {
                         println err
                         //currentBuild.result = "FAILED"
@@ -260,6 +261,15 @@ def uploadLogsToGit (packageVersion) {
         sh "git add . && git commit -am 'Adding report files for the version ${packageVersion}'"
         withCredentials([gitUsernamePassword(credentialsId: 'github_token', gitToolName: 'Default')]) {
             sh "git push --set-upstream origin master"
+        }
+    }
+}
+def uploadexcelToGit () {
+        sh "git config user.email 'tapas.mishra@wavelabs.ai'"
+        sh "git config user.name 'Tapas Mishra'"
+        sh "git add . && git commit -am 'Adding excel files'"
+        withCredentials([gitUsernamePassword(credentialsId: 'github_token', gitToolName: 'Default')]) {
+            sh "git push --set-upstream origin excel"
         }
     }
 }
