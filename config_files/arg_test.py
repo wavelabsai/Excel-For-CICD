@@ -22,8 +22,8 @@ args = parser.parse_args()
 config = vars(args)
 print(args.json_data)
 
-# f = open(args.json_data)
-data = json.load(args.json_data)
+f = open(args.json_data)
+data = json.load(f)
 
 now = datetime.now()
 current_time = now.strftime("%d/%m %H:%M:%S")
