@@ -267,6 +267,8 @@ def uploadLogsToGit (packageVersion) {
     }
 }
 def uploadexcelToGit () {
+    dir ('Excel-For-CICDrepo') {
+        git "https://github.com/wavelabsai/Excel-For-CICD.git"
         sh "git config user.email 'tapas.mishra@wavelabs.ai'"
         sh "git config user.name 'Tapas Mishra'"
         sh "git add . && git commit -am 'Adding excel files'"
