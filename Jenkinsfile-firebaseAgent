@@ -77,8 +77,9 @@ pipeline {
                         lastArtTimeStamp = sendRestReq(lastArtTimeStampurl, 'GET', lastArtTimeStampparams, 'application/json')
                         lastArtTimeStamp = readJSON text: lastArtTimeStamp.content
                         echo lastArtTimeStamp.data.latest_artifact_timestamp.toString()
-                        lastArtTimeStamp = lastArtTimeStamp.data.latest_artifact_timestamp.toString()
-
+                        //lastArtTimeStamp = lastArtTimeStamp.data.latest_artifact_timestamp.toString()
+                        lastArtTimeStamp = "06May2022-13:05:04.411169@magma-5G"
+                        
                         if (ffArtifactURL (lastArtTimeStamp)) {
                             sleep 10
                         }
@@ -116,6 +117,12 @@ pipeline {
                             }
                         }
                         sh(returnStdout: true, script: """if [ ! -d testResult ]; then mkdir testResult; fi""")
+                        sorjsonData = arrangeJson(getResult)
+                        deleteDir()
+                        println sorjsonData
+                        for (rec in sorjsonData.feature_summary.result.data ) {
+                            println rec.featureName
+                        }
                         writeFile file: 'testResult/test_verdict', text: resVerdict
                         def tableBody = readFile("config_files/test_report.html")
                         def headHtml = readFile("config_files/test_report_first_part.html")
@@ -196,6 +203,10 @@ def parseUrl (url) {
 }
 
 @NonCPS
+def arrangeJson (jsonData) {
+   jsonData.feature_summary.result.data = jsonData.feature_summary.result.data.sort { it.featureName }
+   return jsonData
+}
 def createHtmlTableBody (ffMappingData, jsonData, html, html1, packageVersion) {
     ffMappingData.each { ffName, data ->
         jsonData.feature_summary.result.data.each { 
