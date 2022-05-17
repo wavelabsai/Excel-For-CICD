@@ -84,10 +84,13 @@ excel_data_df.loc[excel_data_df['WL 5G SA Daily Regression through Magma CICD pi
 # excel_data_df.set_option('display.max_columns', None)
 # excel_data_df.set_option('display.expand_frame_repr', False)
 # excel_data_df.set_option('max_colwidth', -1)
-
-styled = (excel_data_df.style
-            .applymap(lambda v: 'background-color: %s' % 'green' if v=='passed' else 'background-color: %s' % 'red' if v=='failed' else ''))
-styled.to_excel(args.output_file, sheet_name='WL 5G SA Daily Regression - May', engine='openpyxl', index=False)
+#for removing unnamed columns
+excel_data_df.columns = excel_data_df.columns.str.replace('Unnamed.*', '')
+excel_data_df.to_excel(args.output_file, sheet_name='WL 5G SA Daily Regression - May', engine='openpyxl', index=False)
+#Don't remove 91-93 lines
+#styled = (excel_data_df.style
+ #           .applymap(lambda v: 'background-color: %s' % 'green' if v=='passed' else 'background-color: %s' % 'red' if v=='failed' else ''))
+#styled.to_excel(args.output_file, sheet_name='WL 5G SA Daily Regression - May', engine='openpyxl', index=False)
 
 # def even_number_background(cell_value):
 #     color = 'darkorange' if val == "pass" else ''
