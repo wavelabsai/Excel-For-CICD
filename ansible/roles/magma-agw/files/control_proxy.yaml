@@ -1,8 +1,0 @@
-cloud_address: controller.magmasi.wavelabs.in
-cloud_port: 443
-bootstrap_address: bootstrapper-controller.magmasi.wavelabs.in
-bootstrap_port: 443
-fluentd_address: fluentd.magmasi.wavelabs.in
-fluentd_port: 24224
-
-rootca_cert: /var/opt/magma/tmp/certs/rootCA.pem

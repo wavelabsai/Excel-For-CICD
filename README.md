@@ -1,1 +1,0 @@
-## Single click deployment script for AGW.

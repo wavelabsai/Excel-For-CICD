@@ -1,5 +1,0 @@
-persist_to_redis: false
-enable5g_features: true
-magma_print_grpc_payload: true
-#log_level: DEBUG
-print_grpc_payload: true

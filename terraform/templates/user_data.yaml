@@ -1,9 +1,0 @@
-#cloud-config 
-chpasswd:
-  list: | 
-    root:tp123
-  expire: False 
-ssh_authorized_keys: 
-  - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILk/T0Kth72ob2F1Fq6LWawzXah2FO8DJxkZyZ9gFyfj tapas@wavelabss-MacBook-Pro.local 
-  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWkin+2DjgbnWQ6jNPiRiq/Tae6oEa3QFSmfnvnymYsu4qYGyC33bWkHlvgCmiB7LADansAnShqy8luoyNuAERzsE9Yv3CHm5eQ/N/ROFM0iYlkSpCnY8x+Nbbh6ULjjDeFSfApPIRAsJLXRVu6DW4SBErxSjd69BmJwdAv0/P6sriEJvUSR3xZUY2CLbRG8kzGgOXhEychNdxxN15+KkEN+zelX7XM6sfmEcIRES4NpezOuWWrl4eDBJA8xSSYzdj9iACPx6edJbKen3QrF4muVreNpkd8rziEa0+lDMIK+kxu/ZIalgJCAyX0IiOXJJMiBCGiVWLk4J7dtbK78xv niteshkumar@nblap369
-  - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKShaiuLqwREjDqyW0kCVsX3nO4+vwyHDtjslYHflYqn tapas.mishra@wavelabs.ai

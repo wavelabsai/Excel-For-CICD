@@ -1,4 +1,0 @@
-use_stateless: false
-enable5g_features: true
-#log_level: DEBUG
-magma_print_grpc_payload: true
